@@ -1,4 +1,10 @@
 <?php
+require_once 'csrf.php';
+if (!csrf_validate($_POST['csrf_token'] ?? null)) {
+    die('CSRF token invalid. <a href="index.php">Вернуться</a>');
+}
+
+
 require_once 'db.php';
 
 $action = $_POST['action'] ?? '';
