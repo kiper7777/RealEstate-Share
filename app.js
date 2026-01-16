@@ -381,3 +381,33 @@ async function submitParticipation() {
         elements.participateBtn.disabled = false;
     }
 }
+
+/* highlighting the active tab when scrolling */
+// Активная вкладка в меню при прокрутке
+(function initNavActive() {
+  const links = Array.from(document.querySelectorAll('.nav-link'))
+    .filter(a => a.getAttribute('href') && a.getAttribute('href').startsWith('#'));
+
+  const sections = links
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+
+  function setActive() {
+    const y = window.scrollY + 120;
+    let activeId = null;
+
+    for (const sec of sections) {
+      if (sec.offsetTop <= y) activeId = sec.id;
+    }
+
+    links.forEach(a => {
+      const id = a.getAttribute('href').slice(1);
+      a.classList.toggle('active', id === activeId);
+    });
+  }
+
+  window.addEventListener('scroll', setActive, { passive: true });
+  setActive();
+})();
+
+

@@ -1073,3 +1073,11 @@ footer {
 footer span {
     color: var(--accent);
 }
+
+/* smooth scrolling */
+
+html { scroll-behavior: smooth; }
+.nav-link.active {
+  color: var(--text-main);
+  background: rgba(148, 163, 184, 0.12);
+}
