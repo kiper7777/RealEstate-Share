@@ -1,6 +1,10 @@
 <?php
 require_once 'db.php';
 
+require_once 'csrf.php';
+$csrfToken = csrf_get_token();
+
+
 // Текущий пользователь
 $currentUser = null;
 if (!empty($_SESSION['user_id'])) {
@@ -375,6 +379,8 @@ if ($res) {
                 </div>
                 <form method="post" action="auth.php">
                     <input type="hidden" name="action" value="login">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+
                     <div class="modal-body">
                         <div class="form-row">
                             <label for="loginEmail">E-mail</label>
@@ -402,6 +408,8 @@ if ($res) {
                 </div>
                 <form method="post" action="auth.php">
                     <input type="hidden" name="action" value="register">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+
                     <div class="modal-body">
                         <div class="form-row">
                             <label for="regName">Имя и фамилия</label>
@@ -431,6 +439,14 @@ if ($res) {
         window.APP_PROPERTIES = <?= json_encode($properties, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) ?>;
         window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
     </script>
+
+    <script>
+        window.APP_PROPERTIES = <?= json_encode($properties, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) ?>;
+        window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
+        window.CSRF_TOKEN = <?= json_encode($csrfToken, JSON_UNESCAPED_UNICODE) ?>;
+    </script>
+
+
     <script src="app.js"></script>
 </body>
 
