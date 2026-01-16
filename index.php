@@ -75,6 +75,10 @@ if ($res) {
                         Привет,
                         <?= htmlspecialchars($currentUser['name']) ?>
                     </span>
+
+                    <a href="dashboard.php" class="btn btn-primary btn-sm">Кабинет</a>
+
+
                     <a href="logout.php" class="btn btn-outline btn-sm">Выйти</a>
                     <?php else: ?>
                     <button class="btn btn-outline" id="loginBtn">Вход партнёра</button>
