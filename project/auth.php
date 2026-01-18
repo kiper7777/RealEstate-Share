@@ -40,6 +40,8 @@ if ($action === 'register') {
     $_SESSION['user_id'] = $userId;
     $_SESSION['user_name'] = $name;
     $_SESSION['user_email'] = $email;
+    $_SESSION['is_admin'] = 0;
+
 
     header('Location: index.php');
     exit;
@@ -68,6 +70,8 @@ if ($action === 'login') {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];
+    $_SESSION['is_admin'] = !empty($user['is_admin']) ? 1 : 0;
+
 
     header('Location: index.php');
     exit;

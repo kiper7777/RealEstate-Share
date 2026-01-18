@@ -8,11 +8,18 @@ function formatPercent(value) {
 }
 
 // Глобальное состояние
+// const state = {
+//     properties: Array.isArray(window.APP_PROPERTIES) ? window.APP_PROPERTIES : [],
+//     selectedId: null,
+//     filter: "all"
+// };
+
 const state = {
-    properties: Array.isArray(window.APP_PROPERTIES) ? window.APP_PROPERTIES : [],
-    selectedId: null,
-    filter: "all"
+  properties: [],
+  selectedId: null,
+  filter: "all"
 };
+
 
 const elements = {};
 
@@ -20,7 +27,20 @@ const elements = {};
 document.addEventListener("DOMContentLoaded", () => {
     cacheElements();
     initFilters();
+    // renderProperties();
+
+    await loadProperties();
     renderProperties();
+    if (state.properties.length > 0) selectProperty(state.properties[0].id);
+
+async function loadProperties() {
+    const r = await fetch('api/properties.php', { method:'GET' });
+    const j = await r.json();
+    state.properties = Array.isArray(j.properties) ? j.properties : [];
+    }
+
+
+
     if (state.properties.length > 0) {
         selectProperty(state.properties[0].id);
     }
@@ -38,6 +58,10 @@ function cacheElements() {
     elements.detailsLocation = document.getElementById("detailsLocation");
     elements.detailsTags = document.getElementById("detailsTags");
     elements.detailsPrice = document.getElementById("detailsPrice");
+
+    elements.detailsMainImage = document.getElementById('detailsMainImage');
+    elements.detailsThumbs = document.getElementById('detailsThumbs');
+
 
     elements.galleryTitle = document.getElementById("galleryTitle");
     elements.galleryMeta = document.getElementById("galleryMeta");
@@ -209,7 +233,40 @@ function selectProperty(id) {
     if (elements.errorAmount) {
         elements.errorAmount.textContent = "";
     }
+
+    renderMedia(property);
 }
+
+function renderMedia(property){
+  if (!elements.detailsMainImage || !elements.detailsThumbs) return;
+
+  const media = Array.isArray(property.media) ? property.media : [];
+
+  if (media.length === 0) {
+    elements.detailsMainImage.removeAttribute('src');
+    elements.detailsMainImage.alt = '';
+    elements.detailsThumbs.innerHTML = '';
+    return;
+  }
+
+  // main
+  elements.detailsMainImage.src = media[0].file_path;
+  elements.detailsMainImage.alt = media[0].caption || property.name;
+
+  // thumbs
+  elements.detailsThumbs.innerHTML = '';
+  media.slice(0, 8).forEach((m, idx) => {
+    const d = document.createElement('div');
+    d.className = 'details-thumb';
+    d.innerHTML = `<img src="${m.file_path}" alt="">`;
+    d.addEventListener('click', () => {
+      elements.detailsMainImage.src = m.file_path;
+      elements.detailsMainImage.alt = m.caption || property.name;
+    });
+    elements.detailsThumbs.appendChild(d);
+  });
+}
+
 
 // Toast
 let toastTimeout = null;
@@ -344,16 +401,15 @@ async function submitParticipation() {
     elements.participateBtn.disabled = true;
 
     try {
-        const response = await fetch("participation.php", {
+        const response = await fetch("api/participation.php", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-CSRF-Token": window.CSRF_TOKEN
             },
-            body: JSON.stringify({
-                property_id: property.id,
-                amount: amount
-            })
+            body: JSON.stringify({ property_id: property.id, amount })
         });
+
 
         const data = await response.json();
 

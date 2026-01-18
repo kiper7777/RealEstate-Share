@@ -196,6 +196,11 @@ if ($res) {
 
                     <div class="details-gallery">
                         <div class="gallery-main">
+                            <div class="details-photo">
+                                <img id="detailsMainImage" alt="" />
+                            </div>
+                            <div class="details-thumbs" id="detailsThumbs"></div>
+
                             <div>
                                 <div class="gallery-main-label">Обзор объекта</div>
                                 <div class="gallery-main-title" id="galleryTitle">Фотографии и планировка</div>
@@ -439,13 +444,18 @@ if ($res) {
     </div>
 
     <!-- Перед app.js прокидываем данные PHP -> JS -->
-    <script>
+    <!-- <script>
         window.APP_PROPERTIES = <?= json_encode($properties, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) ?>;
         window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
     </script>
 
     <script>
         window.APP_PROPERTIES = <?= json_encode($properties, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) ?>;
+        window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
+        window.CSRF_TOKEN = <?= json_encode($csrfToken, JSON_UNESCAPED_UNICODE) ?>;
+    </script> -->
+
+    <script>
         window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
         window.CSRF_TOKEN = <?= json_encode($csrfToken, JSON_UNESCAPED_UNICODE) ?>;
     </script>
