@@ -100,23 +100,35 @@ function renderProperties() {
         card.dataset.id = p.id;
 
         card.innerHTML = `
-            <div class="property-thumb">
-                <div class="property-thumb-tag">${p.type === "residential" ? "Жилая" : "Коммерческая"}</div>
-                <div class="property-thumb-info">
-                    <span>${formatPercent(p.yield_percent)} годовых</span>
-                    <span>${String(p.payback_years).replace(".", ",")} лет окупаемости</span>
+            <div class="property-thumb property-thumb--v2">
+                <div class="thumb-top">
+                <span class="thumb-pill">${p.type === "residential" ? "Жилая" : "Коммерческая"}</span>
+                <span class="thumb-pill thumb-pill--muted">${p.region === "europe" ? "Европа" : "Ближний Восток"}</span>
+                </div>
+
+                <div class="thumb-stats">
+                <div class="thumb-stat">
+                    <div class="thumb-stat-label">Доходность</div>
+                    <div class="thumb-stat-value">${formatPercent(p.yield_percent)}</div>
+                </div>
+                <div class="thumb-stat">
+                    <div class="thumb-stat-label">Окупаемость</div>
+                    <div class="thumb-stat-value">${String(p.payback_years).replace(".", ",")} лет</div>
+                </div>
                 </div>
             </div>
+
             <div>
                 <div class="property-card-title">${p.name}</div>
                 <div class="property-card-location">${p.location}</div>
                 <div class="property-card-meta">
-                    <div class="property-card-price">${formatCurrency(p.price)}</div>
-                    <div class="property-card-yield">Доходность ~ ${formatPercent(p.yield_percent)}</div>
-                    <div class="property-card-remaining">Осталось собрать: <strong>${formatCurrency(remaining)}</strong></div>
+                <div class="property-card-price">${formatCurrency(p.price)}</div>
+                <div class="property-card-yield">Доходность ~ ${formatPercent(p.yield_percent)}</div>
+                <div class="property-card-remaining">Осталось собрать: <strong>${formatCurrency(remaining)}</strong></div>
                 </div>
             </div>
         `;
+
 
         card.addEventListener("click", () => {
             selectProperty(p.id);

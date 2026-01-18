@@ -499,6 +499,83 @@ main {
     gap: 4px;
 }
 
+/* --- Property thumb v2 (фикс переполнения + аккуратный вид) --- */
+.property-thumb--v2{
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:10px;
+  min-height:92px;
+}
+
+.thumb-top{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.thumb-pill{
+  max-width:100%;
+  display:inline-flex;
+  align-items:center;
+  padding:3px 8px;
+  border-radius:999px;
+  font-size:10px;
+  line-height:1.2;
+  background:rgba(15,23,42,0.85);
+  border:1px solid rgba(255,255,255,0.14);
+  color:rgba(255,255,255,0.92);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.thumb-pill--muted{
+  color:rgba(226,232,240,0.85);
+  background:rgba(15,23,42,0.55);
+}
+
+.thumb-stats{
+  display:grid;
+  /* grid-template-columns:1fr 1fr; */
+  gap:8px;
+}
+
+.thumb-stat{
+  border-radius:12px;
+  padding:8px 8px;
+  background:rgba(15,23,42,0.55);
+  border:1px solid rgba(255,255,255,0.10);
+  min-width:0;
+}
+
+.thumb-stat-label{
+  font-size:10px;
+  color:rgba(226,232,240,0.75);
+  margin-bottom:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.thumb-stat-value{
+  font-size:12px;
+  font-weight:600;
+  color:rgba(255,255,255,0.95);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* На очень узких экранах делаем статы в столбик */
+@media (max-width:420px){
+  .thumb-stats{ grid-template-columns:1fr; }
+}
+
+
+
 .property-card-title {
     font-size: 14px;
     font-weight: 500;
