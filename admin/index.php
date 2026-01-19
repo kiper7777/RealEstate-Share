@@ -1,13 +1,14 @@
 <?php
-require_once __DIR__ . '/../db.php';
-require_once __DIR__ . '/../csrf.php';
+require_once __DIR__ . '/../project/db.php';
+require_once __DIR__ . '/../project/csrf.php';
 
 if (empty($_SESSION['user_id']) || empty($_SESSION['is_admin'])) {
-  header('Location: ../index.php');
+  header('Location: ../project/index.php');
   exit;
 }
 
 $csrf = csrf_get_token();
+
 
 // список объектов
 $props = [];

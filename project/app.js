@@ -23,31 +23,29 @@ const state = {
 
 const elements = {};
 
-// Инициализация после загрузки DOM
-document.addEventListener("DOMContentLoaded", () => {
-    cacheElements();
-    initFilters();
-    // renderProperties();
-
-    await loadProperties();
-    renderProperties();
-    if (state.properties.length > 0) selectProperty(state.properties[0].id);
-
 async function loadProperties() {
-    const r = await fetch('api/properties.php', { method:'GET' });
-    const j = await r.json();
-    state.properties = Array.isArray(j.properties) ? j.properties : [];
-    }
+  const r = await fetch('api/properties.php', { method: 'GET' });
+  const j = await r.json();
+  state.properties = Array.isArray(j.properties) ? j.properties : [];
+}
 
+// Инициализация после загрузки DOM
+document.addEventListener("DOMContentLoaded", async () => {
+  cacheElements();
+  initFilters();
 
+  await loadProperties();
+  renderProperties();
 
-    if (state.properties.length > 0) {
-        selectProperty(state.properties[0].id);
-    }
-    initToast();
-    initModals();
-    initParticipationForm();
+  if (state.properties.length > 0) {
+    selectProperty(state.properties[0].id);
+  }
+
+  initToast();
+  initModals();
+  initParticipationForm();
 });
+
 
 // Кэшируем элементы
 function cacheElements() {
