@@ -1,11 +1,10 @@
 <?php
+require_once 'db.php';
 require_once 'csrf.php';
+
 if (!csrf_validate($_POST['csrf_token'] ?? null)) {
     die('CSRF token invalid. <a href="index.php">Вернуться</a>');
 }
-
-
-require_once 'db.php';
 
 $action = $_POST['action'] ?? '';
 
@@ -15,11 +14,9 @@ if ($action === 'register') {
     $password = $_POST['password'] ?? '';
 
     if (mb_strlen($name) < 3 || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($password) < 6) {
-        // В реальном проекте — красивое отображение ошибок
         die('Некорректные данные регистрации. <a href="index.php">Вернуться</a>');
     }
 
-    // Проверка, что email свободен
     $emailEsc = mysqli_real_escape_string($conn, $email);
     $res = mysqli_query($conn, "SELECT id FROM users WHERE email='$emailEsc' LIMIT 1");
     if ($res && mysqli_num_rows($res) > 0) {
@@ -30,8 +27,8 @@ if ($action === 'register') {
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $hashEsc = mysqli_real_escape_string($conn, $hash);
 
-    $sql = "INSERT INTO users (name, email, password_hash)
-            VALUES ('$nameEsc', '$emailEsc', '$hashEsc')";
+    $sql = "INSERT INTO users (name, email, password_hash, is_admin)
+            VALUES ('$nameEsc', '$emailEsc', '$hashEsc', 0)";
     if (!mysqli_query($conn, $sql)) {
         die('Ошибка регистрации: ' . mysqli_error($conn));
     }
@@ -41,7 +38,6 @@ if ($action === 'register') {
     $_SESSION['user_name'] = $name;
     $_SESSION['user_email'] = $email;
     $_SESSION['is_admin'] = 0;
-
 
     header('Location: index.php');
     exit;
@@ -61,17 +57,17 @@ if ($action === 'login') {
     if (!$res || mysqli_num_rows($res) === 0) {
         die('Пользователь не найден. <a href="index.php">Вернуться</a>');
     }
+
     $user = mysqli_fetch_assoc($res);
 
     if (!password_verify($password, $user['password_hash'])) {
         die('Неверный пароль. <a href="index.php">Вернуться</a>');
     }
 
-    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_id'] = (int)$user['id'];
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];
     $_SESSION['is_admin'] = !empty($user['is_admin']) ? 1 : 0;
-
 
     header('Location: index.php');
     exit;

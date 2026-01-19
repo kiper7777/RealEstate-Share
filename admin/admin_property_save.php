@@ -1,31 +1,31 @@
 <?php
-require_once __DIR__ . '/../db.php';
-require_once __DIR__ . '/../csrf.php';
+require_once __DIR__ . '/../project/db.php';
+require_once __DIR__ . '/../project/csrf.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
 if (empty($_SESSION['user_id']) || empty($_SESSION['is_admin'])) {
-  echo json_encode(['success'=>false,'message'=>'Forbidden'], JSON_UNESCAPED_UNICODE);
-  exit;
+    echo json_encode(['success'=>false,'message'=>'Forbidden'], JSON_UNESCAPED_UNICODE);
+    exit;
 }
 
 $csrfHeader = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
 if (!csrf_validate($csrfHeader)) {
-  echo json_encode(['success'=>false,'message'=>'CSRF invalid'], JSON_UNESCAPED_UNICODE);
-  exit;
+    echo json_encode(['success'=>false,'message'=>'CSRF invalid'], JSON_UNESCAPED_UNICODE);
+    exit;
 }
 
 $data = json_decode(file_get_contents('php://input'), true) ?: [];
 
-$fields = ['name','location','type','region','status','price','min_ticket','max_partners','rent_per_year','yield_percent','payback_years','risk','description'];
-foreach ($fields as $f) {
-  if (!isset($data[$f]) || $data[$f]==='') {
-    echo json_encode(['success'=>false,'message'=>"Missing field: $f"], JSON_UNESCAPED_UNICODE);
-    exit;
-  }
+$need = ['name','location','type','region','status','price','min_ticket','max_partners','rent_per_year','yield_percent','payback_years','risk','description'];
+foreach ($need as $k) {
+    if (!isset($data[$k]) || $data[$k] === '') {
+        echo json_encode(['success'=>false,'message'=>"Missing: $k"], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 }
 
-$id = isset($data['id']) && $data['id'] ? (int)$data['id'] : 0;
+$id = !empty($data['id']) ? (int)$data['id'] : 0;
 
 $name = mysqli_real_escape_string($conn, $data['name']);
 $location = mysqli_real_escape_string($conn, $data['location']);
@@ -43,31 +43,15 @@ $yield = (float)$data['yield_percent'];
 $payback = (float)$data['payback_years'];
 
 if ($id > 0) {
-  $sql = "UPDATE properties SET
-            name='$name',
-            location='$location',
-            type='$type',
-            region='$region',
-            status='$status',
-            price=$price,
-            min_ticket=$min_ticket,
-            max_partners=$max_partners,
-            rent_per_year=$rent_per_year,
-            yield_percent=$yield,
-            payback_years=$payback,
-            risk='$risk',
-            description='$desc'
-          WHERE id=$id";
-} else {
-  $sql = "INSERT INTO properties
-          (name, location, region, type, status, price, min_ticket, max_partners, rent_per_year, yield_percent, payback_years, risk, description)
-          VALUES
-          ('$name','$location','$region','$type','$status',$price,$min_ticket,$max_partners,$rent_per_year,$yield,$payback,'$risk','$desc')";
-}
-
-if (!mysqli_query($conn, $sql)) {
-  echo json_encode(['success'=>false,'message'=>mysqli_error($conn)], JSON_UNESCAPED_UNICODE);
-  exit;
-}
-
-echo json_encode(['success'=>true,'id'=> $id>0 ? $id : mysqli_insert_id($conn)], JSON_UNESCAPED_UNICODE);
+    $sql = "UPDATE properties SET
+              name='$name',
+              location='$location',
+              type='$type',
+              region='$region',
+              status='$status',
+              price=$price,
+              min_ticket=$min_ticket,
+              max_partners=$max_partners,
+              rent_per_year=$rent_per_year,
+              yield_percent=$yield,
+              payback

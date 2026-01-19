@@ -120,7 +120,7 @@ if ($res) {
                             <div class="hero-stat-value">12 стран</div>
                         </div>
                         <div class="hero-stat">
-                            <div classhero-stat-label">Партнёры</div>
+                            <div class="hero-stat-label">Партнёры</div>
                             <div class="hero-stat-value">320+ инвесторов</div>
                         </div>
                     </div>
