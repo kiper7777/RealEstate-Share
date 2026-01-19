@@ -70,10 +70,10 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) $pending[] = $r;
         </div>
       </div>
       <div class="nav-actions">
-        <a href="../index.php" class="nav-link">На сайт</a>
-        <a href="../dashboard.php" class="nav-link">Кабинет</a>
+        <a href="../project/index.php" class="nav-link">На сайт</a>
+        <a href="../project/dashboard.php" class="nav-link">Кабинет</a>
         <span class="nav-user">Админ: <?= htmlspecialchars($_SESSION['user_name']) ?></span>
-        <a href="../logout.php" class="btn btn-outline btn-sm">Выйти</a>
+        <a href="../project/logout.php" class="btn btn-outline btn-sm">Выйти</a>
       </div>
     </div>
   </header>
