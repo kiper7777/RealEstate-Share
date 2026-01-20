@@ -11,7 +11,7 @@ function upload_error_message(int $code): string {
     UPLOAD_ERR_FORM_SIZE => 'Файл превышает MAX_FILE_SIZE в форме',
     UPLOAD_ERR_PARTIAL => 'Файл загружен частично',
     UPLOAD_ERR_NO_FILE => 'Файл не был загружен',
-    UPLOAD_ERR_NO_TMP_DIR => 'Отсутствует временная директория на сервере',
+    UPLOAD_ERR_NO_TMP_DIR => 'Нет временной директории на сервере',
     UPLOAD_ERR_CANT_WRITE => 'Не удалось записать файл на диск',
     UPLOAD_ERR_EXTENSION => 'Загрузка остановлена расширением PHP',
   ];
@@ -43,37 +43,19 @@ if (empty($_FILES['image'])) {
 }
 
 $f = $_FILES['image'];
-
 if (!isset($f['error']) || $f['error'] !== UPLOAD_ERR_OK) {
-  $msg = upload_error_message((int)($f['error'] ?? -1));
   echo json_encode([
     'success'=>false,
-    'message'=>$msg,
+    'message'=>upload_error_message((int)($f['error'] ?? -1)),
     'debug'=>[
-      'php_upload_max_filesize'=>ini_get('upload_max_filesize'),
-      'php_post_max_size'=>ini_get('post_max_size'),
-      'php_file_uploads'=>ini_get('file_uploads'),
+      'upload_max_filesize'=>ini_get('upload_max_filesize'),
+      'post_max_size'=>ini_get('post_max_size')
     ]
   ], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
 $tmp = $f['tmp_name'];
-if (!is_uploaded_file($tmp)) {
-  echo json_encode(['success'=>false,'message'=>'tmp_name не является загруженным файлом'], JSON_UNESCAPED_UNICODE);
-  exit;
-}
-
-$maxBytes = 10 * 1024 * 1024; // 10MB
-if (!empty($f['size']) && (int)$f['size'] > $maxBytes) {
-  echo json_encode(['success'=>false,'message'=>'Файл слишком большой (макс 10MB)'], JSON_UNESCAPED_UNICODE);
-  exit;
-}
-
-/**
- * Надёжная проверка "это изображение"
- * getimagesize умеет jpeg/png/webp и даёт MIME.
- */
 $info = @getimagesize($tmp);
 if ($info === false || empty($info['mime'])) {
   echo json_encode(['success'=>false,'message'=>'Файл не распознан как изображение'], JSON_UNESCAPED_UNICODE);
@@ -81,62 +63,39 @@ if ($info === false || empty($info['mime'])) {
 }
 
 $mime = $info['mime'];
-$extMap = [
-  'image/jpeg' => 'jpg',
-  'image/png'  => 'png',
-  'image/webp' => 'webp',
-];
-
+$extMap = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp'];
 if (!isset($extMap[$mime])) {
-  echo json_encode(['success'=>false,'message'=>"Неподдерживаемый формат: $mime (разрешены JPG/PNG/WebP)"], JSON_UNESCAPED_UNICODE);
+  echo json_encode(['success'=>false,'message'=>"Неподдерживаемый формат: $mime"], JSON_UNESCAPED_UNICODE);
+  exit;
+}
+
+$uploadsDir = __DIR__ . '/../uploads';
+if (!is_dir($uploadsDir) && !mkdir($uploadsDir, 0755, true)) {
+  echo json_encode(['success'=>false,'message'=>'Не удалось создать uploads'], JSON_UNESCAPED_UNICODE);
+  exit;
+}
+if (!is_writable($uploadsDir)) {
+  echo json_encode(['success'=>false,'message'=>'uploads не доступна для записи (права)'], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
 $ext = $extMap[$mime];
-
-// Папка uploads в корне сайта (рядом с /project, /admin, /api)
-$uploadsDir = __DIR__ . '/../uploads';
-if (!is_dir($uploadsDir)) {
-  if (!mkdir($uploadsDir, 0755, true)) {
-    echo json_encode(['success'=>false,'message'=>'Не удалось создать папку uploads'], JSON_UNESCAPED_UNICODE);
-    exit;
-  }
-}
-
-if (!is_writable($uploadsDir)) {
-  echo json_encode(['success'=>false,'message'=>'Папка uploads недоступна для записи (права доступа)'], JSON_UNESCAPED_UNICODE);
-  exit;
-}
-
 $filename = 'p'.$propertyId.'_'.date('Ymd_His').'_'.bin2hex(random_bytes(4)).'.'.$ext;
-$destPath = $uploadsDir . '/' . $filename;
+$dest = $uploadsDir . '/' . $filename;
 
-if (!move_uploaded_file($tmp, $destPath)) {
-  echo json_encode([
-    'success'=>false,
-    'message'=>'move_uploaded_file() не смог сохранить файл',
-    'debug'=>[
-      'dest'=>$destPath,
-      'uploads_writable'=>is_writable($uploadsDir),
-    ]
-  ], JSON_UNESCAPED_UNICODE);
+if (!move_uploaded_file($tmp, $dest)) {
+  echo json_encode(['success'=>false,'message'=>'move_uploaded_file() failed'], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
-// Сохраняем В БД ТОЛЬКО имя файла
 $filenameEsc = mysqli_real_escape_string($conn, $filename);
 $capEsc = mysqli_real_escape_string($conn, $caption);
 
 $sql = "INSERT INTO property_media (property_id, file_path, caption, sort_order)
         VALUES ($propertyId, '$filenameEsc', '$capEsc', $sort)";
-
 if (!mysqli_query($conn, $sql)) {
   echo json_encode(['success'=>false,'message'=>mysqli_error($conn)], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
-echo json_encode([
-  'success'=>true,
-  'media_id'=>mysqli_insert_id($conn),
-  'file_name'=>$filename
-], JSON_UNESCAPED_UNICODE);
+echo json_encode(['success'=>true,'media_id'=>mysqli_insert_id($conn)], JSON_UNESCAPED_UNICODE);

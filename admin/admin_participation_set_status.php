@@ -19,7 +19,7 @@ $data = json_decode(file_get_contents('php://input'), true) ?: [];
 $id = isset($data['id']) ? (int)$data['id'] : 0;
 $status = $data['status'] ?? '';
 
-if ($id <= 0 || !in_array($status, ['approved','rejected'], true)) {
+if ($id<=0 || !in_array($status, ['approved','rejected'], true)) {
   echo json_encode(['success'=>false,'message'=>'Bad input'], JSON_UNESCAPED_UNICODE);
   exit;
 }
@@ -34,4 +34,4 @@ if (mysqli_affected_rows($conn) === 0) {
   exit;
 }
 
-echo json_encode(['success'=>true,'id'=>$id,'status'=>$status], JSON_UNESCAPED_UNICODE);
+echo json_encode(['success'=>true], JSON_UNESCAPED_UNICODE);
