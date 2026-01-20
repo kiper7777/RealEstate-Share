@@ -8,6 +8,7 @@ if (empty($_SESSION['user_id']) || empty($_SESSION['is_admin'])) {
   echo json_encode(['success'=>false,'message'=>'Forbidden'], JSON_UNESCAPED_UNICODE);
   exit;
 }
+
 $csrfHeader = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
 if (!csrf_validate($csrfHeader)) {
   echo json_encode(['success'=>false,'message'=>'CSRF invalid'], JSON_UNESCAPED_UNICODE);
@@ -15,11 +16,27 @@ if (!csrf_validate($csrfHeader)) {
 }
 
 $data = json_decode(file_get_contents('php://input'), true) ?: [];
-$id = (int)($data['id'] ?? 0);
-if ($id<=0) {
-  echo json_encode(['success'=>false,'message'=>'Bad id'], JSON_UNESCAPED_UNICODE);
+$ids = $data['ids'] ?? [];
+
+if (!is_array($ids) || empty($ids)) {
+  echo json_encode(['success'=>false,'message'=>'No ids'], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
-mysqli_query($conn, "UPDATE messages SET is_deleted=1 WHERE id=$id");
-echo json_encode(['success'=>true], JSON_UNESCAPED_UNICODE);
+$idsInt = [];
+foreach ($ids as $id) {
+  $id = (int)$id;
+  if ($id > 0) $idsInt[] = $id;
+}
+if (empty($idsInt)) {
+  echo json_encode(['success'=>false,'message'=>'Bad ids'], JSON_UNESCAPED_UNICODE);
+  exit;
+}
+
+$idList = implode(',', $idsInt);
+if (!mysqli_query($conn, "DELETE FROM messages WHERE id IN ($idList)")) {
+  echo json_encode(['success'=>false,'message'=>mysqli_error($conn)], JSON_UNESCAPED_UNICODE);
+  exit;
+}
+
+echo json_encode(['success'=>true,'deleted'=>count($idsInt)], JSON_UNESCAPED_UNICODE);
