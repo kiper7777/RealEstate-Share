@@ -13,7 +13,6 @@ $base = preg_replace('~/api/.*$~', '', $script);            // станет: /re
 $base = rtrim($base, '/');                                  // /realestate или ''
 
 function media_url(string $base, string $stored): string {
-  // stored теперь ожидаем как "filename.jpg". Но на всякий случай нормализуем.
   $stored = trim($stored);
   if ($stored === '') return '';
   $filename = basename(str_replace('\\','/',$stored));
@@ -43,12 +42,24 @@ while ($res && ($row = mysqli_fetch_assoc($res))) {
   while ($resM && ($m = mysqli_fetch_assoc($resM))) {
     $media[] = [
       'id' => (int)$m['id'],
-      // ВАЖНО: отдаём "готовый URL" под твою структуру
       'url' => media_url($base, $m['file_path'] ?? ''),
-      'caption' => $m['caption'],
+      'caption' => $m['caption'] ?? '',
       'sort_order' => (int)$m['sort_order'],
     ];
   }
+
+  // Главное фото для карточек
+  $cover_url = '';
+  if (!empty($media)) {
+    $cover_url = $media[0]['url'] ?? '';
+  }
+
+  $price = (float)$row['price'];
+  $rentPerYear = (float)$row['rent_per_year'];
+  $yieldPercent = (float)$row['yield_percent'];
+
+  // ожидаемый доход €/год: если rent_per_year задан — берём его, иначе считаем по yield%
+  $expectedIncomeYear = $rentPerYear > 0 ? $rentPerYear : ($price > 0 ? ($price * $yieldPercent / 100.0) : 0);
 
   $props[] = [
     'id' => $id,
@@ -57,16 +68,18 @@ while ($res && ($row = mysqli_fetch_assoc($res))) {
     'region' => $row['region'],
     'type' => $row['type'],
     'status' => $row['status'] ?? 'funding',
-    'price' => (float)$row['price'],
+    'price' => $price,
     'min_ticket' => (float)$row['min_ticket'],
     'max_partners' => (int)$row['max_partners'],
-    'rent_per_year' => (float)$row['rent_per_year'],
-    'yield_percent' => (float)$row['yield_percent'],
+    'rent_per_year' => $rentPerYear,
+    'yield_percent' => $yieldPercent,
     'payback_years' => (float)$row['payback_years'],
     'risk' => $row['risk'],
     'description' => $row['description'],
     'invested' => (float)$row['invested'],
     'participants' => (int)$row['participants'],
+    'expected_income_year' => (float)$expectedIncomeYear,
+    'cover_url' => $cover_url,
     'media' => $media
   ];
 }

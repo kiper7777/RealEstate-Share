@@ -16,16 +16,19 @@ if (!csrf_validate($csrfHeader)) {
 }
 
 $data = json_decode(file_get_contents('php://input'), true) ?: [];
-$id = isset($data['id']) ? (int)$data['id'] : 0;
-if ($id <= 0) {
-  echo json_encode(['success'=>false,'message'=>'Bad id'], JSON_UNESCAPED_UNICODE);
+$userId = isset($data['user_id']) ? (int)$data['user_id'] : 0;
+$participationId = isset($data['participation_id']) ? (int)$data['participation_id'] : 0;
+
+if ($userId <= 0 || $participationId <= 0) {
+  echo json_encode(['success'=>false,'message'=>'Bad input'], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
-// сначала удалим медиа-строки (файлы можешь удалять отдельно при желании)
-mysqli_query($conn, "DELETE FROM property_media WHERE property_id=$id");
+$sql = "UPDATE messages
+        SET is_read=1, read_at=NOW()
+        WHERE user_id=$userId AND participation_id=$participationId
+          AND sender_role='user' AND is_read=0";
 
-// участие/заявки оставляем как историю? если нужно — тоже удалить (пока не трогаем)
-mysqli_query($conn, "DELETE FROM properties WHERE id=$id LIMIT 1");
+mysqli_query($conn, $sql);
 
 echo json_encode(['success'=>true], JSON_UNESCAPED_UNICODE);

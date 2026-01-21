@@ -17,22 +17,21 @@ if ($userId <= 0) {
 }
 
 $where = "user_id=$userId";
-if ($participationId > 0) {
-  $where .= " AND participation_id=$participationId";
-}
+if ($participationId > 0) $where .= " AND participation_id=$participationId";
 
 $msgs = [];
-$res = mysqli_query($conn, "SELECT id, sender_role, message_text, created_at
+$res = mysqli_query($conn, "SELECT id, sender_role, message_text, created_at, is_read
                             FROM messages
                             WHERE $where
                             ORDER BY id ASC
-                            LIMIT 400");
+                            LIMIT 600");
 while ($res && ($m = mysqli_fetch_assoc($res))) {
   $msgs[] = [
     'id' => (int)$m['id'],
     'sender_role' => $m['sender_role'],
     'message_text' => $m['message_text'],
     'created_at' => $m['created_at'],
+    'is_read' => (int)$m['is_read'],
   ];
 }
 

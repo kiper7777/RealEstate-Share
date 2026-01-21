@@ -22,37 +22,12 @@ if (!is_array($ids) || empty($ids)) {
   exit;
 }
 
-$idsInt = [];
-foreach ($ids as $id) {
-  $id = (int)$id;
-  if ($id > 0) $idsInt[] = $id;
-}
-if (empty($idsInt)) {
+$ids = array_values(array_filter(array_map('intval', $ids), fn($x)=>$x>0));
+if (empty($ids)) {
   echo json_encode(['success'=>false,'message'=>'Bad ids'], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
-$idList = implode(',', $idsInt);
-
-// Сначала забираем пути для удаления файлов
-$res = mysqli_query($conn, "SELECT id, file_path FROM property_media WHERE id IN ($idList)");
-$files = [];
-while ($res && ($r = mysqli_fetch_assoc($res))) {
-  $files[] = $r['file_path'];
-}
-
-// удаляем записи
+$idList = implode(',', $ids);
 mysqli_query($conn, "DELETE FROM property_media WHERE id IN ($idList)");
-
-// удаляем файлы
-$deletedFiles = 0;
-foreach ($files as $p) {
-  $filename = basename(str_replace('\\','/',$p));
-  $diskPath = __DIR__ . '/../uploads/' . $filename;
-  if (is_file($diskPath)) {
-    @unlink($diskPath);
-    $deletedFiles++;
-  }
-}
-
-echo json_encode(['success'=>true,'deleted_ids'=>count($idsInt),'deleted_files'=>$deletedFiles], JSON_UNESCAPED_UNICODE);
+echo json_encode(['success'=>true,'deleted'=>count($ids)], JSON_UNESCAPED_UNICODE);

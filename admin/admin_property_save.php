@@ -17,75 +17,68 @@ if (!csrf_validate($csrfHeader)) {
 
 $data = json_decode(file_get_contents('php://input'), true) ?: [];
 
-$required = ['name','location','type','region','status','price','min_ticket','max_partners','rent_per_year','yield_percent','payback_years','risk','description'];
-foreach ($required as $f) {
-  if (!isset($data[$f]) || $data[$f]==='') {
-    echo json_encode(['success'=>false,'message'=>"Missing field: $f"], JSON_UNESCAPED_UNICODE);
+$id = isset($data['id']) && $data['id'] !== null ? (int)$data['id'] : null;
+
+$name = trim($data['name'] ?? '');
+$location = trim($data['location'] ?? '');
+$type = trim($data['type'] ?? 'residential');
+$region = trim($data['region'] ?? 'europe');
+$status = trim($data['status'] ?? 'funding');
+
+$price = (float)($data['price'] ?? 0);
+$min_ticket = (float)($data['min_ticket'] ?? 0);
+$max_partners = (int)($data['max_partners'] ?? 0);
+$rent_per_year = (float)($data['rent_per_year'] ?? 0);
+$yield_percent = (float)($data['yield_percent'] ?? 0);
+$payback_years = (float)($data['payback_years'] ?? 0);
+$risk = trim($data['risk'] ?? '');
+$description = trim($data['description'] ?? '');
+
+if (mb_strlen($name) < 3 || mb_strlen($location) < 3) {
+  echo json_encode(['success'=>false,'message'=>'Заполните название и локацию'], JSON_UNESCAPED_UNICODE);
+  exit;
+}
+
+$nameEsc = mysqli_real_escape_string($conn, $name);
+$locEsc = mysqli_real_escape_string($conn, $location);
+$typeEsc = mysqli_real_escape_string($conn, $type);
+$regionEsc = mysqli_real_escape_string($conn, $region);
+$statusEsc = mysqli_real_escape_string($conn, $status);
+$riskEsc = mysqli_real_escape_string($conn, $risk);
+$descEsc = mysqli_real_escape_string($conn, $description);
+
+if ($id) {
+  $sql = "UPDATE properties SET
+    name='$nameEsc',
+    location='$locEsc',
+    type='$typeEsc',
+    region='$regionEsc',
+    status='$statusEsc',
+    price=$price,
+    min_ticket=$min_ticket,
+    max_partners=$max_partners,
+    rent_per_year=$rent_per_year,
+    yield_percent=$yield_percent,
+    payback_years=$payback_years,
+    risk='$riskEsc',
+    description='$descEsc'
+    WHERE id=$id LIMIT 1";
+  if (!mysqli_query($conn, $sql)) {
+    echo json_encode(['success'=>false,'message'=>mysqli_error($conn)], JSON_UNESCAPED_UNICODE);
     exit;
   }
+  echo json_encode(['success'=>true,'id'=>$id], JSON_UNESCAPED_UNICODE);
+  exit;
 }
 
-$id = !empty($data['id']) ? (int)$data['id'] : 0;
-
-$name = mysqli_real_escape_string($conn, $data['name']);
-$location = mysqli_real_escape_string($conn, $data['location']);
-$type = mysqli_real_escape_string($conn, $data['type']);
-$region = mysqli_real_escape_string($conn, $data['region']);
-$status = mysqli_real_escape_string($conn, $data['status']);
-$risk = mysqli_real_escape_string($conn, $data['risk']);
-$desc = mysqli_real_escape_string($conn, $data['description']);
-
-$price = (float)$data['price'];
-$min_ticket = (float)$data['min_ticket'];
-$max_partners = (int)$data['max_partners'];
-$rent_per_year = (float)$data['rent_per_year'];
-$yield = (float)$data['yield_percent'];
-$payback = (float)$data['payback_years'];
-
-if ($id > 0) {
-  $sql = "UPDATE properties SET
-            name='$name',
-            location='$location',
-            type='$type',
-            region='$region',
-            status='$status',
-            price=$price,
-            min_ticket=$min_ticket,
-            max_partners=$max_partners,
-            rent_per_year=$rent_per_year,
-            yield_percent=$yield,
-            payback_years=$payback,
-            risk='$risk',
-            description='$desc'
-          WHERE id=$id";
-} else {
-  $sql = "INSERT INTO properties
-          (name, location, region, type, status, price, min_ticket, max_partners, rent_per_year, yield_percent, payback_years, risk, description)
-          VALUES
-          ('$name','$location','$region','$type','$status',$price,$min_ticket,$max_partners,$rent_per_year,$yield,$payback,'$risk','$desc')";
-}
-
+// INSERT
+$sql = "INSERT INTO properties
+  (name, location, type, region, status, price, min_ticket, max_partners, rent_per_year, yield_percent, payback_years, risk, description)
+  VALUES
+  ('$nameEsc','$locEsc','$typeEsc','$regionEsc','$statusEsc',$price,$min_ticket,$max_partners,$rent_per_year,$yield_percent,$payback_years,'$riskEsc','$descEsc')";
 if (!mysqli_query($conn, $sql)) {
   echo json_encode(['success'=>false,'message'=>mysqli_error($conn)], JSON_UNESCAPED_UNICODE);
   exit;
 }
 
-$pid = $id > 0 ? $id : mysqli_insert_id($conn);
-
-$res = mysqli_query($conn, "SELECT * FROM properties WHERE id=$pid LIMIT 1");
-$prop = $res ? mysqli_fetch_assoc($res) : null;
-if (!$prop) {
-  echo json_encode(['success'=>true,'property'=>['id'=>$pid]], JSON_UNESCAPED_UNICODE);
-  exit;
-}
-
-// числа нормализуем (для JS)
-$prop['id'] = (int)$prop['id'];
-$prop['price'] = (float)$prop['price'];
-$prop['min_ticket'] = (float)$prop['min_ticket'];
-$prop['max_partners'] = (int)$prop['max_partners'];
-$prop['rent_per_year'] = (float)$prop['rent_per_year'];
-$prop['yield_percent'] = (float)$prop['yield_percent'];
-$prop['payback_years'] = (float)$prop['payback_years'];
-
-echo json_encode(['success'=>true,'property'=>$prop], JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
+echo json_encode(['success'=>true,'id'=>mysqli_insert_id($conn)], JSON_UNESCAPED_UNICODE);

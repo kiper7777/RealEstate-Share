@@ -17,7 +17,7 @@ $script = $_SERVER['SCRIPT_NAME'] ?? '/project/dashboard.php';
 $base = preg_replace('~/project/.*$~', '', $script);
 $base = rtrim($base, '/');
 
-// Мои участия + 1 фото объекта
+// Мои участия + cover + unread count (админ -> user)
 $sql = "SELECT 
           part.id AS participation_id,
           part.amount,
@@ -28,6 +28,11 @@ $sql = "SELECT
           p.name,
           p.location,
           p.price,
+          p.rent_per_year,
+          p.yield_percent,
+          p.payback_years,
+          p.risk,
+          p.description,
           p.status AS property_status,
           p.type AS property_type,
           p.region AS property_region,
@@ -35,7 +40,15 @@ $sql = "SELECT
              FROM property_media pm
             WHERE pm.property_id = p.id
             ORDER BY pm.sort_order ASC, pm.id DESC
-            LIMIT 1) AS cover_file
+            LIMIT 1) AS cover_file,
+          COALESCE((
+            SELECT COUNT(*)
+            FROM messages m
+            WHERE m.user_id = part.user_id
+              AND m.participation_id = part.id
+              AND m.sender_role='admin'
+              AND m.is_read=0
+          ),0) AS unread_for_user
         FROM participations part
         JOIN properties p ON p.id = part.property_id
         WHERE part.user_id = $userId
@@ -47,7 +60,11 @@ $total = 0.0;
 while ($res && ($r = mysqli_fetch_assoc($res))) {
   $r['amount'] = (float)$r['amount'];
   $r['price'] = (float)$r['price'];
+  $r['rent_per_year'] = (float)$r['rent_per_year'];
+  $r['yield_percent'] = (float)$r['yield_percent'];
+  $r['payback_years'] = (float)$r['payback_years'];
   $r['share_percent'] = $r['share_percent'] !== null ? (float)$r['share_percent'] : null;
+  $r['unread_for_user'] = (int)$r['unread_for_user'];
 
   $cover = $r['cover_file'] ?? '';
   $filename = $cover ? basename(str_replace('\\','/',$cover)) : '';
@@ -73,18 +90,54 @@ while ($res && ($r = mysqli_fetch_assoc($res))) {
     .dash-kpi-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;}
     .dash-kpi-value{font-size:18px;font-weight:600;margin-top:6px;}
 
-    .table{width:100%;border-collapse:separate;border-spacing:0 10px;}
-    .tr{background:rgba(15,23,42,0.95);border:1px solid rgba(55,65,81,0.9);}
-    .table td{padding:10px 10px;font-size:12px;color:var(--text-muted);vertical-align:top;}
-    .table td strong{color:var(--text-main);}
+    /* list */
+    .cards{display:flex;flex-direction:column;gap:12px;margin-top:10px;}
+    .card{
+      border-radius:18px;border:1px solid rgba(55,65,81,0.9);
+      background:rgba(15,23,42,0.95);
+      overflow:hidden;
+    }
+    .card-head{
+      display:grid;grid-template-columns:110px 1fr auto;
+      gap:12px;padding:12px;align-items:center;cursor:pointer;
+    }
+    @media (max-width:820px){.card-head{grid-template-columns:110px 1fr;}.card-actions{grid-column:1/-1;}}
+    .thumb{width:110px;height:74px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(2,6,23,0.25);}
+    .title{font-size:14px;font-weight:600;color:var(--text-main);}
+    .meta{color:var(--text-muted);font-size:12px;line-height:1.35;margin-top:4px;}
+    .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:11px;border:1px solid rgba(55,65,81,0.9);background:rgba(15,23,42,0.95);color:var(--text-muted);}
+    .pill strong{color:var(--text-main);}
+    .status.pending{border-color:rgba(245,158,11,0.8);background:rgba(245,158,11,0.12);color:#fde68a;}
+    .status.approved{border-color:rgba(34,197,94,0.7);background:rgba(22,163,74,0.16);color:#bbf7d0;}
+    .status.rejected{border-color:rgba(239,68,68,0.7);background:rgba(239,68,68,0.14);color:#fecaca;}
 
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:11px;border:1px solid rgba(55,65,81,0.9);background:rgba(15,23,42,0.95);}
-    .pill.pending{border-color:rgba(245,158,11,0.8);background:rgba(245,158,11,0.12);color:#fde68a;}
-    .pill.approved{border-color:rgba(34,197,94,0.7);background:rgba(22,163,74,0.16);color:#bbf7d0;}
-    .pill.rejected{border-color:rgba(239,68,68,0.7);background:rgba(239,68,68,0.14);color:#fecaca;}
+    /* Badge above corner */
+    .btn-badge{position:relative;overflow:visible;}
+    .badge{
+      position:absolute;top:-7px;right:-7px;
+      min-width:18px;height:18px;padding:0 6px;border-radius:999px;
+      font-size:11px;display:flex;align-items:center;justify-content:center;
+      background:rgba(239,68,68,0.95);color:#fff;border:1px solid rgba(255,255,255,0.28);
+      pointer-events:none;box-shadow:0 10px 24px rgba(0,0,0,.35);
+    }
 
-    .thumb{width:86px;height:56px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:block;}
-    .thumb.empty{background:rgba(2,6,23,0.25);}
+    /* Expand */
+    .card-body{display:none;padding:0 12px 12px;}
+    .card.expanded .card-body{display:block;}
+    .divider{border:none;border-top:1px solid rgba(55,65,81,0.7);margin:10px 0;}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    @media (max-width:860px){.grid2{grid-template-columns:1fr;}}
+    .kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    @media (max-width:640px){.kv{grid-template-columns:1fr;}}
+    .box{border-radius:14px;border:1px solid rgba(55,65,81,.9);background:rgba(2,6,23,0.20);padding:10px;}
+    .k{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;}
+    .v{margin-top:6px;font-size:13px;color:var(--text-main);font-weight:600;}
+
+    .gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+    @media (max-width:980px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media (max-width:520px){.gallery{grid-template-columns:1fr;}}
+    .gallery img{width:100%;height:160px;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,0.1);}
 
     /* Drawer chat */
     .overlay{position:fixed;inset:0;display:none;background:rgba(0,0,0,.55);z-index:9999;}
@@ -136,7 +189,7 @@ while ($res && ($r = mysqli_fetch_assoc($res))) {
     <div class="dash-header">
       <div>
         <h1 class="dash-title">Ваш кабинет</h1>
-        <div class="dash-sub">Заявки на участие + чат с администратором по каждой заявке.</div>
+        <div class="dash-sub">Клик по карточке раскрывает подробную информацию об объекте и фото. Чат — справа.</div>
       </div>
     </div>
 
@@ -152,46 +205,95 @@ while ($res && ($r = mysqli_fetch_assoc($res))) {
         <div class="details-description">Пока нет заявок. Перейдите в «Объекты» и выберите объект.</div>
       </div>
     <?php else: ?>
-      <table class="table">
-        <tbody>
+      <div class="cards" id="cards">
         <?php foreach ($rows as $r): ?>
-          <tr class="tr">
-            <td style="width:100px;">
+          <div class="card js-card"
+               data-participation-id="<?= (int)$r['participation_id'] ?>"
+               data-property-id="<?= (int)$r['property_id'] ?>">
+            <div class="card-head js-head">
               <?php if ($r['cover_url']): ?>
                 <img class="thumb" src="<?= h($r['cover_url']) ?>" alt="">
               <?php else: ?>
-                <div class="thumb empty"></div>
+                <div class="thumb"></div>
               <?php endif; ?>
-            </td>
-            <td>
-              <strong><?= h($r['name']) ?></strong><br>
-              <?= h($r['location']) ?><br>
-              <span style="font-size:11px;">Тип: <strong><?= h($r['property_type']) ?></strong> · Статус: <strong><?= h($r['property_status']) ?></strong></span>
-            </td>
-            <td>
-              Сумма: <strong><?= eur($r['amount']) ?></strong><br>
-              Доля: <strong><?= $r['share_percent'] !== null ? number_format($r['share_percent'], 2, ',', ' ') . '%' : '—' ?></strong><br>
-              Заявка: <strong>#<?= (int)$r['participation_id'] ?></strong>
-            </td>
-            <td>
-              <span class="pill <?= h($r['status']) ?>">
-                <?= $r['status']==='pending'?'На модерации':($r['status']==='approved'?'Подтверждено':'Отклонено') ?>
-              </span><br>
-              Дата: <strong><?= h(date('Y-m-d', strtotime($r['created_at']))) ?></strong>
-            </td>
-            <td>
-              <button class="btn btn-outline btn-sm js-open-chat"
-                type="button"
-                data-participation-id="<?= (int)$r['participation_id'] ?>"
-                data-property-id="<?= (int)$r['property_id'] ?>"
-                data-title="<?= h('Чат по заявке #' . (int)$r['participation_id']) ?>">
-                Чат с админом
-              </button>
-            </td>
-          </tr>
+
+              <div>
+                <div class="title"><?= h($r['name']) ?></div>
+                <div class="meta"><?= h($r['location']) ?></div>
+                <div class="pills">
+                  <span class="pill">Заявка: <strong>#<?= (int)$r['participation_id'] ?></strong></span>
+                  <span class="pill">Сумма: <strong><?= eur($r['amount']) ?></strong></span>
+                  <span class="pill status <?= h($r['status']) ?>">
+                    <?= $r['status']==='pending'?'На модерации':($r['status']==='approved'?'Подтверждено':'Отклонено') ?>
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-actions">
+                <button class="btn btn-outline btn-sm btn-badge js-open-chat"
+                  type="button"
+                  data-participation-id="<?= (int)$r['participation_id'] ?>"
+                  data-property-id="<?= (int)$r['property_id'] ?>"
+                  data-title="<?= h('Чат по заявке #' . (int)$r['participation_id']) ?>">
+                  Чат с админом
+                  <?php if ((int)$r['unread_for_user'] > 0): ?>
+                    <span class="badge"><?= (int)$r['unread_for_user'] ?></span>
+                  <?php endif; ?>
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <hr class="divider">
+              <div class="dash-sub" style="margin:0 0 10px;">
+                <strong>Подробности объекта</strong> (экономика, доходность и фото).
+              </div>
+
+              <div class="grid2">
+                <div>
+                  <div class="kv">
+                    <div class="box"><div class="k">Стоимость</div><div class="v"><?= eur($r['price']) ?></div></div>
+                    <div class="box"><div class="k">Аренда / год</div><div class="v"><?= eur($r['rent_per_year']) ?></div></div>
+                    <div class="box"><div class="k">Доходность</div><div class="v"><?= number_format($r['yield_percent'], 2, ',', ' ') ?>%</div></div>
+                    <div class="box"><div class="k">Окупаемость</div><div class="v"><?= number_format($r['payback_years'], 1, ',', ' ') ?> лет</div></div>
+                  </div>
+
+                  <div class="box" style="margin-top:10px;">
+                    <div class="k">Риски</div>
+                    <div class="v" style="font-size:12px;font-weight:500;color:rgba(226,232,240,.92);"><?= h($r['risk']) ?></div>
+                  </div>
+
+                  <div class="box" style="margin-top:10px;">
+                    <div class="k">Ожидаемый доход / год</div>
+                    <?php
+                      $expected = $r['rent_per_year'] > 0 ? $r['rent_per_year'] : ($r['price'] * $r['yield_percent'] / 100.0);
+                    ?>
+                    <div class="v"><?= eur($expected) ?></div>
+                    <div style="margin-top:6px;color:var(--text-muted);font-size:12px;line-height:1.35;">
+                      Если <code>rent_per_year</code> задан — берём его, иначе считаем <code>price × yield%</code>.
+                    </div>
+                  </div>
+
+                  <div class="box" style="margin-top:10px;">
+                    <div class="k">Описание</div>
+                    <div style="margin-top:8px;color:rgba(226,232,240,.9);font-size:12px;line-height:1.55;">
+                      <?= nl2br(h($r['description'])) ?>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="dash-sub" style="margin:0 0 10px;">Фотографии (крупнее)</div>
+                  <div class="gallery js-gallery">
+                    <div class="dash-sub">Загрузка фото…</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         <?php endforeach; ?>
-        </tbody>
-      </table>
+      </div>
     <?php endif; ?>
   </main>
 
@@ -220,6 +322,48 @@ while ($res && ($r = mysqli_fetch_assoc($res))) {
 <script>
   const CSRF = <?= json_encode($csrf, JSON_UNESCAPED_UNICODE) ?>;
 
+  const apiBase = (() => {
+    // dashboard.php находится в /project/ => API в /api/
+    return '../api';
+  })();
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // Expand card + load details photos once
+  const loadedMedia = new Set();
+  document.querySelectorAll('.js-card').forEach(card => {
+    const head = card.querySelector('.js-head');
+    head.addEventListener('click', async (e) => {
+      // не раскрывать, если нажали кнопку чата
+      if (e.target.closest('.js-open-chat')) return;
+
+      card.classList.toggle('expanded');
+      if (card.classList.contains('expanded')) {
+        const propId = Number(card.dataset.propertyId);
+        if (!loadedMedia.has(propId)) {
+          loadedMedia.add(propId);
+          const gallery = card.querySelector('.js-gallery');
+          gallery.innerHTML = '<div class="dash-sub">Загрузка фото…</div>';
+          const r = await fetch(apiBase + '/property_details.php?property_id=' + propId);
+          const j = await r.json();
+          if (!j.success) {
+            gallery.innerHTML = '<div class="dash-sub">' + escapeHtml(j.message || 'Ошибка') + '</div>';
+            return;
+          }
+          const media = Array.isArray(j.media) ? j.media : [];
+          if (!media.length) {
+            gallery.innerHTML = '<div class="dash-sub">Фото не найдены.</div>';
+            return;
+          }
+          gallery.innerHTML = media.map(m => `<img src="${m.url}" alt="">`).join('');
+        }
+      }
+    });
+  });
+
+  // Chat drawer
   const overlay = document.getElementById('overlay');
   const drawer = document.getElementById('drawer');
   const chatList = document.getElementById('chatList');
@@ -227,37 +371,44 @@ while ($res && ($r = mysqli_fetch_assoc($res))) {
   const chatSub = document.getElementById('chatSub');
   const chatInput = document.getElementById('chatInput');
 
-  let ctx = { participationId:0, propertyId:0 };
+  let ctx = { participationId:0, propertyId:0, openerBtn:null };
 
-  function openDrawer(){
-    overlay.classList.add('open');
-    drawer.classList.add('open');
-  }
+  function openDrawer(){ overlay.classList.add('open'); drawer.classList.add('open'); }
   function closeDrawer(){
     overlay.classList.remove('open');
     drawer.classList.remove('open');
     chatList.innerHTML = '';
     chatInput.value = '';
-    ctx = { participationId:0, propertyId:0 };
+    ctx = { participationId:0, propertyId:0, openerBtn:null };
   }
+
   overlay.addEventListener('click', closeDrawer);
   document.getElementById('chatClose').addEventListener('click', closeDrawer);
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  async function markRead(){
+    await fetch('chat_mark_read.php', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRF-Token':CSRF},
+      body: JSON.stringify({ participation_id: ctx.participationId })
+    }).catch(()=>{});
+    if (ctx.openerBtn){
+      const b = ctx.openerBtn.querySelector('.badge');
+      if (b) b.remove();
+    }
   }
 
   async function loadChat(){
-    chatList.innerHTML = '<div style="color:rgba(148,163,184,0.9);font-size:12px;">Загрузка...</div>';
+    chatList.innerHTML = '<div class="dash-sub">Загрузка…</div>';
     const r = await fetch('chat_fetch.php?participation_id=' + ctx.participationId);
     const j = await r.json();
     if (!j.success){
-      chatList.innerHTML = '<div style="color:rgba(148,163,184,0.9);font-size:12px;">'+escapeHtml(j.message || 'Ошибка')+'</div>';
+      chatList.innerHTML = '<div class="dash-sub">'+escapeHtml(j.message || 'Ошибка')+'</div>';
       return;
     }
     const msgs = Array.isArray(j.messages) ? j.messages : [];
-    if (msgs.length === 0){
-      chatList.innerHTML = '<div style="color:rgba(148,163,184,0.9);font-size:12px;">Сообщений нет. Напишите первое.</div>';
+    if (!msgs.length){
+      chatList.innerHTML = '<div class="dash-sub">Сообщений нет. Напишите первое.</div>';
+      await markRead();
       return;
     }
     chatList.innerHTML = msgs.map(m => `
@@ -270,6 +421,7 @@ while ($res && ($r = mysqli_fetch_assoc($res))) {
       </div>
     `).join('');
     chatList.scrollTop = chatList.scrollHeight;
+    await markRead();
   }
 
   async function sendChat(){
@@ -297,9 +449,11 @@ while ($res && ($r = mysqli_fetch_assoc($res))) {
   document.getElementById('chatSend').addEventListener('click', sendChat);
 
   document.querySelectorAll('.js-open-chat').forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
       ctx.participationId = Number(btn.dataset.participationId);
       ctx.propertyId = Number(btn.dataset.propertyId);
+      ctx.openerBtn = btn;
       chatTitle.textContent = btn.dataset.title || 'Чат';
       chatSub.textContent = 'Заявка #' + ctx.participationId;
       openDrawer();
