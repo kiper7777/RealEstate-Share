@@ -444,7 +444,7 @@ main {
 
 .property-card {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    /* grid-template-columns: 120px 1fr; */
     gap: 12px;
     padding: 10px;
     border-radius: var(--card-radius);
@@ -676,7 +676,7 @@ main {
 /* Gallery */
 
 .details-gallery {
-    display: grid;
+    display: flex;
     grid-template-columns: 2fr 1fr;
     gap: 8px;
     margin-bottom: 10px;
