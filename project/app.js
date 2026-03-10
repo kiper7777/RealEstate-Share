@@ -68,7 +68,7 @@
         display:grid;
         grid-template-columns:140px 1fr;
         gap:14px;
-        padding:16px 16px 74px 16px; /* запас снизу под плавающую кнопку */
+        padding:16px 16px 74px 16px;
         cursor:pointer;
       }
 
@@ -277,6 +277,7 @@
         padding:12px;
         border:1px solid rgba(255,255,255,0.08);
         background:rgba(15,23,42,0.72);
+        overflow:hidden;
       }
 
       .prop-box-k{
@@ -293,6 +294,8 @@
         color:#f8fafc;
         line-height:1.45;
         word-break:break-word;
+        overflow-wrap:anywhere;
+        white-space:normal;
       }
 
       .prop-description-box{
@@ -300,6 +303,7 @@
         padding:12px;
         border:1px solid rgba(255,255,255,0.08);
         background:rgba(15,23,42,0.72);
+        overflow:hidden;
       }
 
       .prop-description-text{
@@ -308,6 +312,7 @@
         line-height:1.65;
         color:rgba(226,232,240,0.88);
         word-break:break-word;
+        overflow-wrap:anywhere;
       }
 
       .prop-income-note{
@@ -315,15 +320,24 @@
         font-size:12px;
         line-height:1.5;
         color:rgba(191,219,254,0.92);
+        word-break:break-word;
+        overflow-wrap:anywhere;
       }
 
-      /* ===== RIGHT DETAILS PANEL IMAGES ===== */
+      /* ===== RIGHT DETAILS PANEL ===== */
       .details-gallery{
         overflow:hidden;
+        min-width:0;
       }
 
       .gallery-main{
         min-width:0;
+        flex:1 1 auto;
+      }
+
+      .gallery-side{
+        min-width:220px;
+        flex:0 0 220px;
       }
 
       .details-photo{
@@ -338,7 +352,7 @@
         display:block;
         width:100%;
         max-width:100%;
-        // height:360px;
+        height:auto;
         object-fit:cover;
         border-radius:20px;
       }
@@ -387,6 +401,40 @@
         display:block;
       }
 
+      /* ВАЖНО: когда раскрыта карточка слева — два правых блока становятся друг под другом */
+      .details-grid{
+        display:grid;
+        grid-template-columns:repeat(2, minmax(0,1fr));
+        gap:16px;
+        align-items:start;
+      }
+
+      .details-grid.stack-vertical{
+        grid-template-columns:1fr;
+      }
+
+      .details-grid .details-economics,
+      .details-grid .details-participation{
+        min-width:0;
+        width:100%;
+      }
+
+      /* Чтобы слово "сбалансированный" и другие длинные слова не вылезали */
+      .metric,
+      .metric-value,
+      #metricRisk,
+      #metricYield,
+      #metricPayback,
+      #metricRent,
+      .details-economics,
+      .details-participation,
+      .economics-note,
+      .details-description{
+        word-break:break-word;
+        overflow-wrap:anywhere;
+        white-space:normal;
+      }
+
       @media (max-width: 980px){
         .prop-grid{
           grid-template-columns:1fr;
@@ -397,9 +445,18 @@
           height:132px;
         }
 
-        .details-photo img,
-        #detailsMainImage{
-          height:300px;
+        .details-grid{
+          grid-template-columns:1fr;
+        }
+
+        .details-gallery{
+          flex-direction:column;
+        }
+
+        .gallery-side{
+          min-width:0;
+          width:100%;
+          flex:1 1 auto;
         }
       }
 
@@ -426,14 +483,20 @@
           width:190px;
           height:120px;
         }
-
-        .details-photo img,
-        #detailsMainImage{
-          height:240px;
-        }
       }
     `;
     document.head.appendChild(style);
+  }
+
+  function updateRightColumnLayout() {
+    const detailsGrid = $(".details-grid");
+    if (!detailsGrid) return;
+
+    if (state.expandedId !== null) {
+      detailsGrid.classList.add("stack-vertical");
+    } else {
+      detailsGrid.classList.remove("stack-vertical");
+    }
   }
 
   async function loadProperties() {
@@ -588,6 +651,7 @@
           state.expandedId = state.expandedId === id ? null : id;
           renderList();
           updateIncomeByAmount();
+          updateRightColumnLayout();
         });
       }
     });
@@ -599,6 +663,7 @@
 
     state.selectedId = property.id;
     renderList();
+    updateRightColumnLayout();
 
     const media = Array.isArray(property.media) ? property.media : [];
     const price = Number(property.price || 0);
@@ -738,8 +803,13 @@
         });
 
         renderList();
+
         if (state.filtered.length) {
           selectProperty(state.filtered[0].id);
+        } else {
+          state.selectedId = null;
+          state.expandedId = null;
+          updateRightColumnLayout();
         }
       });
     });
@@ -863,6 +933,7 @@
 
     await loadProperties();
     renderList();
+    updateRightColumnLayout();
 
     if (state.filtered.length) {
       selectProperty(state.filtered[0].id);
