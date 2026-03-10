@@ -1,16 +1,17 @@
 <?php
 require_once 'db.php';
-require_once 'csrf.php';
 
+require_once 'csrf.php';
 $csrfToken = csrf_get_token();
+
 
 // Текущий пользователь
 $currentUser = null;
 if (!empty($_SESSION['user_id'])) {
     $currentUser = [
         'id'    => $_SESSION['user_id'],
-        'name'  => $_SESSION['user_name'] ?? '',
-        'email' => $_SESSION['user_email'] ?? '',
+        'name'  => $_SESSION['user_name'],
+        'email' => $_SESSION['user_email'],
     ];
 }
 
@@ -25,9 +26,9 @@ $sql = "SELECT
         GROUP BY p.id
         ORDER BY p.id ASC";
 $res = mysqli_query($conn, $sql);
-
 if ($res) {
     while ($row = mysqli_fetch_assoc($res)) {
+        // Приводим numeric
         $row['price']         = (float)$row['price'];
         $row['min_ticket']    = (float)$row['min_ticket'];
         $row['max_partners']  = (int)$row['max_partners'];
@@ -50,9 +51,7 @@ if ($res) {
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -66,41 +65,40 @@ if ($res) {
                         <div class="logo-subtitle">Коммерческая и жилая недвижимость</div>
                     </div>
                 </div>
-
                 <div class="nav-actions">
                     <a href="#platform" class="nav-link">Платформа</a>
                     <a href="#properties" class="nav-link">Объекты</a>
                     <a href="#partners" class="nav-link">Партнёрам</a>
 
                     <?php if ($currentUser): ?>
-                        <span class="nav-user">
-                            Привет,
-                            <?= htmlspecialchars($currentUser['name']) ?>
-                        </span>
+                    <span class="nav-user">
+                        Привет,
+                        <?= htmlspecialchars($currentUser['name']) ?>
+                    </span>
 
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Кабинет</a>
-                        <a href="logout.php" class="btn btn-outline btn-sm">Выйти</a>
+                    <a href="dashboard.php" class="btn btn-primary btn-sm">Кабинет</a>
+
+
+                    <a href="logout.php" class="btn btn-outline btn-sm">Выйти</a>
                     <?php else: ?>
-                        <button class="btn btn-outline" id="loginBtn" type="button">Вход партнёра</button>
-                        <button class="btn btn-primary" id="registerBtn" type="button">Стать партнёром</button>
+                    <button class="btn btn-outline" id="loginBtn">Вход партнёра</button>
+                    <button class="btn btn-primary" id="registerBtn">Стать партнёром</button>
                     <?php endif; ?>
                 </div>
             </div>
         </header>
 
         <main>
-            <!-- HERO -->
+            <!-- HERO (Платформа) -->
             <section class="hero" id="platform">
                 <div class="hero-copy">
                     <div class="hero-badge">
                         <span class="hero-badge-dot"></span>
                         <span>Управление объектами + долевое участие онлайн</span>
                     </div>
-
                     <h1 class="hero-title">
                         Инвестируйте в <span>жильё и коммерческие объекты</span> по всему миру
                     </h1>
-
                     <p class="hero-subtitle">
                         Платформа для партнёров, которые хотят участвовать в покупке
                         недвижимости с прозрачной экономикой: вы видите стоимость, аренду,
@@ -117,12 +115,10 @@ if ($res) {
                             <div class="hero-stat-label">Управляемые активы</div>
                             <div class="hero-stat-value">48+ млн €</div>
                         </div>
-
                         <div class="hero-stat">
                             <div class="hero-stat-label">Города</div>
                             <div class="hero-stat-value">12 стран</div>
                         </div>
-
                         <div class="hero-stat">
                             <div class="hero-stat-label">Партнёры</div>
                             <div class="hero-stat-value">320+ инвесторов</div>
@@ -135,7 +131,6 @@ if ($res) {
                         <div class="hero-panel-title">Пример сделки</div>
                         <div class="hero-panel-tag">Live deal · Испания</div>
                     </div>
-
                     <div class="hero-panel-main">
                         <div class="hero-panel-property">Апартаменты на первой линии, Коста-Бланка</div>
                         <div class="hero-panel-location">Испания · Средиземное море</div>
@@ -148,7 +143,7 @@ if ($res) {
 
                         <div class="hero-progress-wrap">
                             <div class="hero-progress-bar">
-                                <div class="hero-progress-inner" style="width:60%;"></div>
+                                <div class="hero-progress-inner"></div>
                             </div>
                             <div class="hero-progress-labels">
                                 <span>Собрано: €120 000</span>
@@ -159,18 +154,15 @@ if ($res) {
                 </div>
             </section>
 
-            <!-- CONTENT -->
+            <!-- ОСНОВНОЙ БЛОК: ОБЪЕКТЫ И ДЕТАЛИ -->
             <section class="content" id="properties">
-                <!-- LEFT COLUMN -->
+                <!-- ЛЕВАЯ КОЛОНКА: СПИСОК -->
                 <div>
                     <div class="section-header">
                         <div>
                             <div class="section-title">Объекты для долевого участия</div>
-                            <div class="section-subtitle">
-                                Выберите объект, чтобы увидеть подробности и условия
-                            </div>
+                            <div class="section-subtitle">Выберите объект, чтобы увидеть подробности и условия</div>
                         </div>
-
                         <div class="pill-online">
                             <span class="pill-dot"></span>
                             <span>Онлайн-подбор в реальном времени</span>
@@ -188,7 +180,7 @@ if ($res) {
                     <div id="propertiesList" class="properties-list"></div>
                 </div>
 
-                <!-- RIGHT COLUMN -->
+                <!-- ПРАВАЯ КОЛОНКА: ДЕТАЛИ -->
                 <div class="details-shell" id="detailsShell">
                     <div class="details-header">
                         <div>
@@ -196,7 +188,6 @@ if ($res) {
                             <div class="details-location" id="detailsLocation"></div>
                             <div class="details-tags" id="detailsTags"></div>
                         </div>
-
                         <div class="details-price-block">
                             <div class="details-price-main" id="detailsPrice"></div>
                             <div class="details-price-label">Общая стоимость объекта</div>
@@ -206,30 +197,26 @@ if ($res) {
                     <div class="details-gallery">
                         <div class="gallery-main">
                             <div class="details-photo">
-                                <img id="detailsMainImage" alt="">
+                                <img id="detailsMainImage" alt="" />
                             </div>
-
                             <div class="details-thumbs" id="detailsThumbs"></div>
 
                             <div>
                                 <div class="gallery-main-label">Обзор объекта</div>
                                 <div class="gallery-main-title" id="galleryTitle">Фотографии и планировка</div>
                                 <div class="gallery-main-meta" id="galleryMeta">
-                                    Здесь будет медиагалерея: фото, планы, дополнительные материалы.
+                                    Здесь будет медиагалерея: фото, видео-тур, планы этажей.
                                 </div>
                             </div>
-
                             <div class="gallery-main-meta-extra">
-                                В production-версии здесь можно подключить медиахранилище, видео-тур и документы по объекту.
+                                В демо-версии данные статичны, в production — интеграция с медиахранилищем.
                             </div>
                         </div>
-
                         <div class="gallery-side">
                             <div class="gallery-tile">
                                 <div class="gallery-tile-label">Тип объекта</div>
                                 <div class="gallery-tile-value" id="galleryType">–</div>
                             </div>
-
                             <div class="gallery-tile">
                                 <div class="gallery-tile-label">Статус</div>
                                 <div class="gallery-tile-value" id="galleryStatus">Выберите объект</div>
@@ -243,55 +230,45 @@ if ($res) {
                     </div>
 
                     <div class="details-grid">
-                        <!-- ECONOMICS -->
+                        <!-- Экономика -->
                         <div class="details-economics">
                             <div class="details-economics-title">Экономическая привлекательность</div>
-
                             <div class="metrics">
                                 <div class="metric">
                                     <div class="metric-label">Годовая арендная ставка</div>
                                     <div class="metric-value" id="metricRent">–</div>
                                 </div>
-
                                 <div class="metric">
                                     <div class="metric-label">Годовой доход</div>
                                     <div class="metric-value" id="metricYield">–</div>
                                 </div>
-
                                 <div class="metric">
                                     <div class="metric-label">Окупаемость</div>
                                     <div class="metric-value" id="metricPayback">–</div>
                                 </div>
-
                                 <div class="metric">
                                     <div class="metric-label">Риск-профиль</div>
                                     <div class="metric-value" id="metricRisk">–</div>
                                 </div>
                             </div>
-
                             <div class="economics-note" id="economicsNote">
                                 Все расчёты являются ориентировочными и не являются инвестиционной рекомендацией.
                             </div>
                         </div>
 
-                        <!-- PARTICIPATION -->
+                        <!-- Форма участия -->
                         <div class="details-participation">
                             <div class="details-participation-header">
-                                <div class="details-participation-title">
-                                    Участвовать в долевом приобретении
-                                </div>
-
+                                <div class="details-participation-title">Участвовать в долевом приобретении</div>
                                 <div class="details-participation-status">
                                     <span id="minTicketLabel">Мин. взнос: –</span><br>
-
                                     <?php if ($currentUser): ?>
-                                        <small>
-                                            Вы участвуете как:
-                                            <?= htmlspecialchars($currentUser['name']) ?>
-                                            (<?= htmlspecialchars($currentUser['email']) ?>)
-                                        </small>
+                                    <small>Вы участвуете как:
+                                        <?= htmlspecialchars($currentUser['name']) ?> (
+                                        <?= htmlspecialchars($currentUser['email']) ?>)
+                                    </small>
                                     <?php else: ?>
-                                        <small>Для участия войдите или зарегистрируйтесь.</small>
+                                    <small>Для участия войдите или зарегистрируйтесь.</small>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -300,7 +277,6 @@ if ($res) {
                                 <div class="progress-bar">
                                     <div class="progress-inner" id="progressInner"></div>
                                 </div>
-
                                 <div class="progress-labels">
                                     <span id="progressCollected">Собрано: –</span>
                                     <span id="progressRemaining">Осталось: –</span>
@@ -315,18 +291,12 @@ if ($res) {
                             <form id="participationForm">
                                 <div class="form-row">
                                     <label for="investmentAmount">Сумма участия</label>
-
                                     <div class="input-inline">
                                         <div class="input-prefix">€</div>
-                                        <input
-                                            type="number"
-                                            id="investmentAmount"
-                                            min="0"
-                                            step="500"
+                                        <input type="number" id="investmentAmount" min="0" step="500"
                                             placeholder="Укажите сумму">
                                         <div class="input-suffix" id="shareInfo">–</div>
                                     </div>
-
                                     <div class="error-text" id="errorAmount"></div>
                                 </div>
 
@@ -334,7 +304,6 @@ if ($res) {
                                     <div class="form-note">
                                         После подтверждения менеджером объект и ваша доля появятся в личном кабинете.
                                     </div>
-
                                     <button type="submit" class="btn btn-primary btn-sm" id="participateBtn">
                                         Участвовать
                                     </button>
@@ -342,63 +311,51 @@ if ($res) {
                             </form>
 
                             <?php if (!$currentUser): ?>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        const amount = document.getElementById('investmentAmount');
-                                        const btn = document.getElementById('participateBtn');
-
-                                        if (amount && btn) {
-                                            amount.disabled = true;
-                                            btn.disabled = true;
-                                        }
-                                    });
-                                </script>
+                            <script>
+                                // Простое отключение формы, если не авторизован
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    const amount = document.getElementById('investmentAmount');
+                                    const btn = document.getElementById('participateBtn');
+                                    if (amount && btn) {
+                                        amount.disabled = true;
+                                        btn.disabled = true;
+                                    }
+                                });
+                            </script>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- PARTNERS -->
+            <!-- БЛОК ДЛЯ ПАРТНЁРОВ -->
             <section id="partners" class="section-partners">
                 <div class="section-inner">
                     <h2>Партнёрская модель</h2>
                     <p>
-                        Мы работаем с частными инвесторами и корпоративными партнёрами, которые хотят
-                        диверсифицировать портфель за счёт недвижимости в разных странах.
+                        Мы работаем с частными инвесторами и корпоративными партнёрами, которые хотят диверсифицировать
+                        портфель за счёт недвижимости в разных странах.
                     </p>
-
                     <div class="partners-grid">
                         <div class="partner-card">
                             <h3>1. Регистрация</h3>
-                            <p>
-                                Заполните короткую анкету, подтвердите e-mail и получите доступ
-                                в личный кабинет партнёра.
-                            </p>
+                            <p>Заполните короткую анкету, подтвердите e-mail и получите доступ в личный кабинет
+                                партнёра.</p>
                         </div>
-
                         <div class="partner-card">
                             <h3>2. Выбор объекта</h3>
-                            <p>
-                                Сравните объекты по доходности, рискам и географии.
-                                Каждый объект проходит многоуровневую проверку.
-                            </p>
+                            <p>Сравните объекты по доходности, рискам и географии. Каждый объект проходит многоуровневую
+                                проверку.</p>
                         </div>
-
                         <div class="partner-card">
                             <h3>3. Долевое участие</h3>
-                            <p>
-                                Укажите сумму участия. Платформа автоматически рассчитает вашу долю
-                                в объекте и прогнозируемый доход.
-                            </p>
+                            <p>Укажите сумму участия. Платформа автоматически рассчитает вашу долю в объекте и
+                                прогнозируемый доход.</p>
                         </div>
-
                         <div class="partner-card">
                             <h3>4. Управление и отчётность</h3>
-                            <p>
-                                Мы берём на себя управление объектом, аренду и отчётность.
-                                Вы получаете выплаты и аналитику онлайн.
-                            </p>
+                            <p>Мы берём на себя управление объектом, аренду и отчётность. Вы получаете выплаты и
+                                аналитику онлайн.</p>
                         </div>
                     </div>
                 </div>
@@ -409,7 +366,7 @@ if ($res) {
             © <span>RealEstate Share</span>. Управление коммерческой и жилой недвижимостью, долевое участие партнёров.
         </footer>
 
-        <!-- TOAST -->
+        <!-- Toast -->
         <div class="success-toast" id="successToast">
             <div class="success-toast-icon">✔</div>
             <div class="success-toast-text">
@@ -422,14 +379,13 @@ if ($res) {
             <div class="success-toast-close" id="toastCloseBtn">✕</div>
         </div>
 
-        <!-- LOGIN MODAL -->
+        <!-- Модальное окно ВХОДА -->
         <div class="modal-backdrop" id="loginModal">
             <div class="modal">
                 <div class="modal-header">
                     <h3>Вход партнёра</h3>
-                    <button class="modal-close" data-modal-close type="button">&times;</button>
+                    <button class="modal-close" data-modal-close>&times;</button>
                 </div>
-
                 <form method="post" action="auth.php">
                     <input type="hidden" name="action" value="login">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
@@ -437,25 +393,13 @@ if ($res) {
                     <div class="modal-body">
                         <div class="form-row">
                             <label for="loginEmail">E-mail</label>
-                            <input
-                                type="email"
-                                id="loginEmail"
-                                name="email"
-                                required
-                                placeholder="you@example.com">
+                            <input type="email" id="loginEmail" name="email" required placeholder="you@example.com">
                         </div>
-
                         <div class="form-row">
                             <label for="loginPassword">Пароль</label>
-                            <input
-                                type="password"
-                                id="loginPassword"
-                                name="password"
-                                required
-                                placeholder="Ваш пароль">
+                            <input type="password" id="loginPassword" name="password" required placeholder="Ваш пароль">
                         </div>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline btn-sm" data-modal-close>Отмена</button>
                         <button type="submit" class="btn btn-primary btn-sm">Войти</button>
@@ -464,14 +408,13 @@ if ($res) {
             </div>
         </div>
 
-        <!-- REGISTER MODAL -->
+        <!-- Модальное окно РЕГИСТРАЦИИ -->
         <div class="modal-backdrop" id="registerModal">
             <div class="modal">
                 <div class="modal-header">
                     <h3>Регистрация партнёра</h3>
-                    <button class="modal-close" data-modal-close type="button">&times;</button>
+                    <button class="modal-close" data-modal-close>&times;</button>
                 </div>
-
                 <form method="post" action="auth.php">
                     <input type="hidden" name="action" value="register">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
@@ -479,35 +422,18 @@ if ($res) {
                     <div class="modal-body">
                         <div class="form-row">
                             <label for="regName">Имя и фамилия</label>
-                            <input
-                                type="text"
-                                id="regName"
-                                name="name"
-                                required
-                                placeholder="Иван Петров">
+                            <input type="text" id="regName" name="name" required placeholder="Иван Петров">
                         </div>
-
                         <div class="form-row">
                             <label for="regEmail">E-mail</label>
-                            <input
-                                type="email"
-                                id="regEmail"
-                                name="email"
-                                required
-                                placeholder="you@example.com">
+                            <input type="email" id="regEmail" name="email" required placeholder="you@example.com">
                         </div>
-
                         <div class="form-row">
                             <label for="regPassword">Пароль</label>
-                            <input
-                                type="password"
-                                id="regPassword"
-                                name="password"
-                                required
+                            <input type="password" id="regPassword" name="password" required
                                 placeholder="Минимум 6 символов">
                         </div>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline btn-sm" data-modal-close>Отмена</button>
                         <button type="submit" class="btn btn-primary btn-sm">Зарегистрироваться</button>
@@ -517,10 +443,23 @@ if ($res) {
         </div>
     </div>
 
+    <!-- Перед app.js прокидываем данные PHP -> JS -->
+    <!-- <script>
+        window.APP_PROPERTIES = <?= json_encode($properties, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) ?>;
+        window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
+    </script>
+
+    <script>
+        window.APP_PROPERTIES = <?= json_encode($properties, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK) ?>;
+        window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
+        window.CSRF_TOKEN = <?= json_encode($csrfToken, JSON_UNESCAPED_UNICODE) ?>;
+    </script> -->
+
     <script>
         window.APP_USER = <?= $currentUser ? json_encode($currentUser, JSON_UNESCAPED_UNICODE) : 'null' ?>;
         window.CSRF_TOKEN = <?= json_encode($csrfToken, JSON_UNESCAPED_UNICODE) ?>;
     </script>
+
 
     <script src="app.js"></script>
 </body>
