@@ -46,7 +46,7 @@ if ($res) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RealEstate Share – Долевое участие в недвижимости</title>
+    <title>RealEstate Share – Equity participation in real estate</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,26 +63,26 @@ if ($res) {
                     <div class="logo-mark">R</div>
                     <div class="logo-text">
                         <div class="logo-title">RealEstate Share</div>
-                        <div class="logo-subtitle">Коммерческая и жилая недвижимость</div>
+                        <div class="logo-subtitle">Commercial and residential real estate</div>
                     </div>
                 </div>
 
                 <div class="nav-actions">
-                    <a href="#platform" class="nav-link">Платформа</a>
-                    <a href="#properties" class="nav-link">Объекты</a>
-                    <a href="#partners" class="nav-link">Партнёрам</a>
+                    <a href="#platform" class="nav-link">Platform</a>
+                    <a href="#properties" class="nav-link">Objects</a>
+                    <a href="#partners" class="nav-link">To partners</a>
 
                     <?php if ($currentUser): ?>
                         <span class="nav-user">
-                            Привет,
+                            Hello,
                             <?= htmlspecialchars($currentUser['name']) ?>
                         </span>
 
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Кабинет</a>
-                        <a href="logout.php" class="btn btn-outline btn-sm">Выйти</a>
+                        <a href="dashboard.php" class="btn btn-primary btn-sm">Cabinet</a>
+                        <a href="logout.php" class="btn btn-outline btn-sm">Log out</a>
                     <?php else: ?>
-                        <button class="btn btn-outline" id="loginBtn" type="button">Вход партнёра</button>
-                        <button class="btn btn-primary" id="registerBtn" type="button">Стать партнёром</button>
+                        <button class="btn btn-outline" id="loginBtn" type="button">Partner Login</button>
+                        <button class="btn btn-primary" id="registerBtn" type="button">Become a partner</button>
                     <?php endif; ?>
                 </div>
             </div>
@@ -94,56 +94,54 @@ if ($res) {
                 <div class="hero-copy">
                     <div class="hero-badge">
                         <span class="hero-badge-dot"></span>
-                        <span>Управление объектами + долевое участие онлайн</span>
+                        <span>Property management + online equity participation</span>
                     </div>
 
                     <h1 class="hero-title">
-                        Инвестируйте в <span>жильё и коммерческие объекты</span> по всему миру
+                        Invest in <span>residential and commercial properties</span> all over the world
                     </h1>
 
                     <p class="hero-subtitle">
-                        Платформа для партнёров, которые хотят участвовать в покупке
-                        недвижимости с прозрачной экономикой: вы видите стоимость, аренду,
-                        окупаемость и статус финансирования каждого объекта.
+                        A platform for partners who want to participate in the purchase of real estate with a transparent economic model: you can see the price, rent, return on investment, and financing status of each property.
                     </p>
 
                     <div class="hero-cta-row">
-                        <a href="#properties" class="btn btn-primary">Посмотреть доступные объекты</a>
-                        <a href="#partners" class="btn btn-outline">Как это работает</a>
+                        <a href="#properties" class="btn btn-primary">View available properties</a>
+                        <a href="#partners" class="btn btn-outline">How does this work</a>
                     </div>
 
                     <div class="hero-stats">
                         <div class="hero-stat">
-                            <div class="hero-stat-label">Управляемые активы</div>
-                            <div class="hero-stat-value">48+ млн €</div>
+                            <div class="hero-stat-label">Managed assets</div>
+                            <div class="hero-stat-value">48+ million €</div>
                         </div>
 
                         <div class="hero-stat">
-                            <div class="hero-stat-label">Города</div>
-                            <div class="hero-stat-value">12 стран</div>
+                            <div class="hero-stat-label">Cities</div>
+                            <div class="hero-stat-value">12 countries</div>
                         </div>
 
                         <div class="hero-stat">
-                            <div class="hero-stat-label">Партнёры</div>
-                            <div class="hero-stat-value">320+ инвесторов</div>
+                            <div class="hero-stat-label">Partners</div>
+                            <div class="hero-stat-value">320+ investors</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="hero-panel">
                     <div class="hero-panel-header">
-                        <div class="hero-panel-title">Пример сделки</div>
-                        <div class="hero-panel-tag">Live deal · Испания</div>
+                        <div class="hero-panel-title">Example of a deal</div>
+                        <div class="hero-panel-tag">Live deal · Spain</div>
                     </div>
 
                     <div class="hero-panel-main">
-                        <div class="hero-panel-property">Апартаменты на первой линии, Коста-Бланка</div>
-                        <div class="hero-panel-location">Испания · Средиземное море</div>
-                        <div class="hero-panel-price">€200 000 · от €5 000 за долю</div>
+                        <div class="hero-panel-property">Frontline apartments, Costa Blanca</div>
+                        <div class="hero-panel-location">Spain · Mediterranean Sea</div>
+                        <div class="hero-panel-price">€200,000 · from €5,000 per share</div>
 
                         <div class="hero-panel-meta">
-                            <span class="hero-chip">Годовой доход от аренды ~ 7,8%</span>
-                            <span class="hero-chip">Прогноз окупаемости ~ 9 лет</span>
+                            <span class="hero-chip">Annual rental income ~ 7.8%</span>
+                            <span class="hero-chip">Payback period is expected to be ~9 years.</span>
                         </div>
 
                         <div class="hero-progress-wrap">
@@ -151,8 +149,8 @@ if ($res) {
                                 <div class="hero-progress-inner" style="width:60%;"></div>
                             </div>
                             <div class="hero-progress-labels">
-                                <span>Собрано: €120 000</span>
-                                <span>Осталось: €80 000</span>
+                                <span>Raised: €120,000</span>
+                                <span>Remaining: €80,000</span>
                             </div>
                         </div>
                     </div>
@@ -165,24 +163,24 @@ if ($res) {
                 <div>
                     <div class="section-header">
                         <div>
-                            <div class="section-title">Объекты для долевого участия</div>
+                            <div class="section-title">Objects for shared participation</div>
                             <div class="section-subtitle">
-                                Выберите объект, чтобы увидеть подробности и условия
+                                Select an item to see details and conditions
                             </div>
                         </div>
 
                         <div class="pill-online">
                             <span class="pill-dot"></span>
-                            <span>Онлайн-подбор в реальном времени</span>
+                            <span>Online selection in real time</span>
                         </div>
                     </div>
 
                     <div class="filters">
-                        <div class="filter-pill active" data-filter="all">Все</div>
-                        <div class="filter-pill" data-filter="residential">Жилая</div>
-                        <div class="filter-pill" data-filter="commercial">Коммерческая</div>
-                        <div class="filter-pill" data-filter="europe">Европа</div>
-                        <div class="filter-pill" data-filter="middleeast">Ближний Восток</div>
+                        <div class="filter-pill active" data-filter="all">All</div>
+                        <div class="filter-pill" data-filter="residential">Residential</div>
+                        <div class="filter-pill" data-filter="commercial">Commercial</div>
+                        <div class="filter-pill" data-filter="europe">Europe</div>
+                        <div class="filter-pill" data-filter="middleeast">Middle East</div>
                     </div>
 
                     <div id="propertiesList" class="properties-list"></div>
@@ -192,14 +190,14 @@ if ($res) {
                 <div class="details-shell" id="detailsShell">
                     <div class="details-header">
                         <div>
-                            <div class="details-name" id="detailsName">Выберите объект из списка</div>
+                            <div class="details-name" id="detailsName">Select an object from the list</div>
                             <div class="details-location" id="detailsLocation"></div>
                             <div class="details-tags" id="detailsTags"></div>
                         </div>
 
                         <div class="details-price-block">
                             <div class="details-price-main" id="detailsPrice"></div>
-                            <div class="details-price-label">Общая стоимость объекта</div>
+                            <div class="details-price-label">Total cost of the property</div>
                         </div>
                     </div>
 
@@ -212,65 +210,65 @@ if ($res) {
                             <div class="details-thumbs" id="detailsThumbs"></div>
 
                             <div>
-                                <div class="gallery-main-label">Обзор объекта</div>
-                                <div class="gallery-main-title" id="galleryTitle">Фотографии и планировка</div>
+                                <div class="gallery-main-label">Overview of the property</div>
+                                <div class="gallery-main-title" id="galleryTitle">Photos and layout</div>
                                 <div class="gallery-main-meta" id="galleryMeta">
-                                    Здесь будет медиагалерея: фото, планы, дополнительные материалы.
+                                    There will be a media gallery here: photos, plans, additional materials.
                                 </div>
                             </div>
 
                             <div class="gallery-main-meta-extra">
-                                В production-версии здесь можно подключить медиахранилище, видео-тур и документы по объекту.
+                               In the production version, you can connect media storage, a video tour, and property documents.
                             </div>
                         </div>
 
                         <div class="gallery-side">
                             <div class="gallery-tile">
-                                <div class="gallery-tile-label">Тип объекта</div>
+                                <div class="gallery-tile-label">Object type</div>
                                 <div class="gallery-tile-value" id="galleryType">–</div>
                             </div>
 
                             <div class="gallery-tile">
-                                <div class="gallery-tile-label">Статус</div>
-                                <div class="gallery-tile-value" id="galleryStatus">Выберите объект</div>
+                                <div class="gallery-tile-label">Status</div>
+                                <div class="gallery-tile-value" id="galleryStatus">Select an object</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="details-description" id="detailsDescription">
-                        Для просмотра подробной информации по объекту, включая экономическую привлекательность,
-                        выберите его слева из списка.
+                        To view detailed information about a property, including its economic attractiveness,
+select it from the list on the left.
                     </div>
 
                     <div class="details-grid">
                         <!-- ECONOMICS -->
                         <div class="details-economics">
-                            <div class="details-economics-title">Экономическая привлекательность</div>
+                            <div class="details-economics-title">Economic attractiveness</div>
 
                             <div class="metrics">
                                 <div class="metric">
-                                    <div class="metric-label">Годовая арендная ставка</div>
+                                    <div class="metric-label">Annual rental rate</div>
                                     <div class="metric-value" id="metricRent">–</div>
                                 </div>
 
                                 <div class="metric">
-                                    <div class="metric-label">Годовой доход</div>
+                                    <div class="metric-label">Annual income</div>
                                     <div class="metric-value" id="metricYield">–</div>
                                 </div>
 
                                 <div class="metric">
-                                    <div class="metric-label">Окупаемость</div>
+                                    <div class="metric-label">Payback</div>
                                     <div class="metric-value" id="metricPayback">–</div>
                                 </div>
 
                                 <div class="metric">
-                                    <div class="metric-label">Риск-профиль</div>
+                                    <div class="metric-label">Risk profile</div>
                                     <div class="metric-value" id="metricRisk">–</div>
                                 </div>
                             </div>
 
                             <div class="economics-note" id="economicsNote">
-                                Все расчёты являются ориентировочными и не являются инвестиционной рекомендацией.
+                                All calculations are indicative only and do not constitute investment advice.
                             </div>
                         </div>
 
@@ -278,20 +276,20 @@ if ($res) {
                         <div class="details-participation">
                             <div class="details-participation-header">
                                 <div class="details-participation-title">
-                                    Участвовать в долевом приобретении
+                                   Participate in a shared acquisition
                                 </div>
 
                                 <div class="details-participation-status">
-                                    <span id="minTicketLabel">Мин. взнос: –</span><br>
+                                    <span id="minTicketLabel">Min. contribution: –</span><br>
 
                                     <?php if ($currentUser): ?>
                                         <small>
-                                            Вы участвуете как:
+                                            You are participating as:
                                             <?= htmlspecialchars($currentUser['name']) ?>
                                             (<?= htmlspecialchars($currentUser['email']) ?>)
                                         </small>
                                     <?php else: ?>
-                                        <small>Для участия войдите или зарегистрируйтесь.</small>
+                                        <small>To participate, please log in or register.</small>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -302,19 +300,19 @@ if ($res) {
                                 </div>
 
                                 <div class="progress-labels">
-                                    <span id="progressCollected">Собрано: –</span>
-                                    <span id="progressRemaining">Осталось: –</span>
+                                    <span id="progressCollected">Collected: –</span>
+                                    <span id="progressRemaining">Left: –</span>
                                 </div>
                             </div>
 
                             <div class="participants-summary">
-                                <span>Текущие партнёры: <strong id="participantsCount">–</strong></span>
-                                <span>Доступно слотов: <strong id="slotsRemaining">–</strong></span>
+                                <span>Current partners: <strong id="participantsCount">–</strong></span>
+                                <span>Available slots: <strong id="slotsRemaining">–</strong></span>
                             </div>
 
                             <form id="participationForm">
                                 <div class="form-row">
-                                    <label for="investmentAmount">Сумма участия</label>
+                                    <label for="investmentAmount">Participation amount</label>
 
                                     <div class="input-inline">
                                         <div class="input-prefix">€</div>
@@ -323,7 +321,7 @@ if ($res) {
                                             id="investmentAmount"
                                             min="0"
                                             step="500"
-                                            placeholder="Укажите сумму">
+                                            placeholder="Please indicate the amount">
                                         <div class="input-suffix" id="shareInfo">–</div>
                                     </div>
 
@@ -332,11 +330,11 @@ if ($res) {
 
                                 <div class="form-footer">
                                     <div class="form-note">
-                                        После подтверждения менеджером объект и ваша доля появятся в личном кабинете.
+                                        Once confirmed by the manager, the property and your share will appear in your personal account.
                                     </div>
 
                                     <button type="submit" class="btn btn-primary btn-sm" id="participateBtn">
-                                        Участвовать
+                                        Participate
                                     </button>
                                 </div>
                             </form>
@@ -362,42 +360,39 @@ if ($res) {
             <!-- PARTNERS -->
             <section id="partners" class="section-partners">
                 <div class="section-inner">
-                    <h2>Партнёрская модель</h2>
+                    <h2>Affiliate model</h2>
                     <p>
-                        Мы работаем с частными инвесторами и корпоративными партнёрами, которые хотят
-                        диверсифицировать портфель за счёт недвижимости в разных странах.
+                        We work with private investors and corporate partners who want to diversify their portfolios with real estate in different countries.
                     </p>
 
                     <div class="partners-grid">
                         <div class="partner-card">
-                            <h3>1. Регистрация</h3>
+                            <h3>1. Registration</h3>
                             <p>
-                                Заполните короткую анкету, подтвердите e-mail и получите доступ
-                                в личный кабинет партнёра.
+                                Fill out a short form, confirm your email, and gain access to your partner account.
                             </p>
                         </div>
 
                         <div class="partner-card">
-                            <h3>2. Выбор объекта</h3>
+                            <h3>2. Selecting an object</h3>
                             <p>
-                                Сравните объекты по доходности, рискам и географии.
-                                Каждый объект проходит многоуровневую проверку.
+                                Compare properties by profitability, risk, and geography.
+Each property undergoes a multi-level review.
                             </p>
                         </div>
 
                         <div class="partner-card">
-                            <h3>3. Долевое участие</h3>
+                            <h3>3. Shared participation</h3>
                             <p>
-                                Укажите сумму участия. Платформа автоматически рассчитает вашу долю
-                                в объекте и прогнозируемый доход.
+                                Specify your participation amount. The platform will automatically calculate your share in the property and the projected income.
                             </p>
                         </div>
 
                         <div class="partner-card">
-                            <h3>4. Управление и отчётность</h3>
+                            <h3>4. Management and reporting</h3>
                             <p>
-                                Мы берём на себя управление объектом, аренду и отчётность.
-                                Вы получаете выплаты и аналитику онлайн.
+                                We handle property management, leasing, and reporting.
+You receive payments and analytics online.
                             </p>
                         </div>
                     </div>
@@ -406,17 +401,17 @@ if ($res) {
         </main>
 
         <footer>
-            © <span>RealEstate Share</span>. Управление коммерческой и жилой недвижимостью, долевое участие партнёров.
+            © <span>RealEstate Share</span>. Commercial and residential real estate management, equity participation of partners.
         </footer>
 
         <!-- TOAST -->
         <div class="success-toast" id="successToast">
             <div class="success-toast-icon">✔</div>
             <div class="success-toast-text">
-                <div class="success-toast-title">Спасибо за участие!</div>
+                <div class="success-toast-title">Thank you for participating!</div>
                 <div class="success-toast-body">
-                    Заявка на долевое участие по выбранному объекту сохранена.
-                    Обновлены остаток суммы и количество партнёров.
+                    The application for shared participation in the selected project has been saved.
+The remaining amount and number of partners have been updated.
                 </div>
             </div>
             <div class="success-toast-close" id="toastCloseBtn">✕</div>
@@ -426,7 +421,7 @@ if ($res) {
         <div class="modal-backdrop" id="loginModal">
             <div class="modal">
                 <div class="modal-header">
-                    <h3>Вход партнёра</h3>
+                    <h3>Partner Login</h3>
                     <button class="modal-close" data-modal-close type="button">&times;</button>
                 </div>
 
@@ -446,19 +441,19 @@ if ($res) {
                         </div>
 
                         <div class="form-row">
-                            <label for="loginPassword">Пароль</label>
+                            <label for="loginPassword">Password</label>
                             <input
                                 type="password"
                                 id="loginPassword"
                                 name="password"
                                 required
-                                placeholder="Ваш пароль">
+                                placeholder="Your password">
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline btn-sm" data-modal-close>Отмена</button>
-                        <button type="submit" class="btn btn-primary btn-sm">Войти</button>
+                        <button type="button" class="btn btn-outline btn-sm" data-modal-close>Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Login</button>
                     </div>
                 </form>
             </div>
@@ -468,7 +463,7 @@ if ($res) {
         <div class="modal-backdrop" id="registerModal">
             <div class="modal">
                 <div class="modal-header">
-                    <h3>Регистрация партнёра</h3>
+                    <h3>Partner registration</h3>
                     <button class="modal-close" data-modal-close type="button">&times;</button>
                 </div>
 
@@ -478,13 +473,13 @@ if ($res) {
 
                     <div class="modal-body">
                         <div class="form-row">
-                            <label for="regName">Имя и фамилия</label>
+                            <label for="regName">First and last name</label>
                             <input
                                 type="text"
                                 id="regName"
                                 name="name"
                                 required
-                                placeholder="Иван Петров">
+                                placeholder="John Smith">
                         </div>
 
                         <div class="form-row">
@@ -498,19 +493,19 @@ if ($res) {
                         </div>
 
                         <div class="form-row">
-                            <label for="regPassword">Пароль</label>
+                            <label for="regPassword">Password</label>
                             <input
                                 type="password"
                                 id="regPassword"
                                 name="password"
                                 required
-                                placeholder="Минимум 6 символов">
+                                placeholder="Minimum 6 characters">
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline btn-sm" data-modal-close>Отмена</button>
-                        <button type="submit" class="btn btn-primary btn-sm">Зарегистрироваться</button>
+                        <button type="button" class="btn btn-outline btn-sm" data-modal-close>Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Register</button>
                     </div>
                 </form>
             </div>
