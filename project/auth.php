@@ -1,10 +1,11 @@
 <?php
-require_once 'db.php';
 require_once 'csrf.php';
 
 if (!csrf_validate($_POST['csrf_token'] ?? null)) {
     die('CSRF token invalid. <a href="index.php">Вернуться</a>');
 }
+
+require_once 'db.php';
 
 $action = $_POST['action'] ?? '';
 
@@ -13,13 +14,14 @@ if ($action === 'register') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (mb_strlen($name) < 3 || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($password) < 6) {
+    if (mb_strlen($name) < 2 || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($password) < 6) {
         die('Некорректные данные регистрации. <a href="index.php">Вернуться</a>');
     }
 
     $emailEsc = mysqli_real_escape_string($conn, $email);
-    $res = mysqli_query($conn, "SELECT id FROM users WHERE email='$emailEsc' LIMIT 1");
-    if ($res && mysqli_num_rows($res) > 0) {
+    $check = mysqli_query($conn, "SELECT id FROM users WHERE email='$emailEsc' LIMIT 1");
+
+    if ($check && mysqli_num_rows($check) > 0) {
         die('Пользователь с таким e-mail уже зарегистрирован. <a href="index.php">Вернуться</a>');
     }
 
@@ -29,12 +31,12 @@ if ($action === 'register') {
 
     $sql = "INSERT INTO users (name, email, password_hash, is_admin)
             VALUES ('$nameEsc', '$emailEsc', '$hashEsc', 0)";
+
     if (!mysqli_query($conn, $sql)) {
         die('Ошибка регистрации: ' . mysqli_error($conn));
     }
 
-    $userId = mysqli_insert_id($conn);
-    $_SESSION['user_id'] = $userId;
+    $_SESSION['user_id'] = mysqli_insert_id($conn);
     $_SESSION['user_name'] = $name;
     $_SESSION['user_email'] = $email;
     $_SESSION['is_admin'] = 0;
@@ -52,8 +54,12 @@ if ($action === 'login') {
     }
 
     $emailEsc = mysqli_real_escape_string($conn, $email);
-    $sql = "SELECT * FROM users WHERE email='$emailEsc' LIMIT 1";
+    $sql = "SELECT id, name, email, password_hash, is_admin
+            FROM users
+            WHERE email='$emailEsc'
+            LIMIT 1";
     $res = mysqli_query($conn, $sql);
+
     if (!$res || mysqli_num_rows($res) === 0) {
         die('Пользователь не найден. <a href="index.php">Вернуться</a>');
     }
@@ -68,6 +74,11 @@ if ($action === 'login') {
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];
     $_SESSION['is_admin'] = !empty($user['is_admin']) ? 1 : 0;
+
+    if (!empty($user['is_admin'])) {
+        header('Location: ../admin/index.php');
+        exit;
+    }
 
     header('Location: index.php');
     exit;

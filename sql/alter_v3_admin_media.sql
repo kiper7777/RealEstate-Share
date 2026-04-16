@@ -23,7 +23,7 @@ CREATE INDEX idx_media_property ON property_media(property_id);
 -- 4) Демо-админ (пароль: Admin123!)
 -- Вставь, если хочешь создать админа быстро (потом поменяй пароль).
 INSERT INTO users (name, email, password_hash, is_admin)
-VALUES ('Admin', 'admin@example.com', '$2y$10$8A7b0mG2mUqZc6D8m4l2xO9Yx.2rJwqkJ7uYlZqXv0cL4uXxQyFvW', 1)
+VALUES ('Admin', '7boyss@ukr.net', '$2y$10$vECEw222SzjnvaWPrHjupOxxdriSeL0vnYdC2hYAMcNE.1BIeuOS.', 1)
 ON DUPLICATE KEY UPDATE is_admin=1;
 
 -- 5) Демо-фото (пути созд позже в /uploads)

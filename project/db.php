@@ -2,7 +2,7 @@
 $servername = 'localhost';
 $username = 'root';       
 $password = '';           
-$database   = 'realestate_share';
+$database   = 'realestateshare';
 
 $conn = mysqli_connect($servername, $username, $password, $database);
 
