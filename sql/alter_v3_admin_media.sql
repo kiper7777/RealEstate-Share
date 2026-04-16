@@ -1,4 +1,4 @@
-USE realestate_share;
+USE realestateshare;
 
 -- 1) Признак администратора
 ALTER TABLE users
@@ -26,5 +26,5 @@ INSERT INTO users (name, email, password_hash, is_admin)
 VALUES ('Admin', 'admin@example.com', '$2y$10$8A7b0mG2mUqZc6D8m4l2xO9Yx.2rJwqkJ7uYlZqXv0cL4uXxQyFvW', 1)
 ON DUPLICATE KEY UPDATE is_admin=1;
 
--- 5) Демо-фото (пути ты создашь позже в /uploads)
+-- 5) Демо-фото (пути созд позже в /uploads)
 -- Можно оставить пустым, а добавлять через админ-панель.

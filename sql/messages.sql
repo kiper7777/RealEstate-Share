@@ -1,4 +1,4 @@
-USE realestate_share;
+USE realestateshare;
 
 CREATE TABLE IF NOT EXISTS messages (
   id INT AUTO_INCREMENT PRIMARY KEY,

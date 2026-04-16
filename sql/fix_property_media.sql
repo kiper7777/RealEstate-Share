@@ -1,4 +1,4 @@
-USE realestate_share;
+USE realestateshare;
 
 -- 1) Если таблицы нет - создаём правильную
 CREATE TABLE IF NOT EXISTS property_media (

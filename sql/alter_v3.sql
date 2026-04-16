@@ -1,4 +1,4 @@
-USE realestate_share;
+USE realestateshare;
 
 -- Роль пользователя (admin/partner)
 ALTER TABLE users

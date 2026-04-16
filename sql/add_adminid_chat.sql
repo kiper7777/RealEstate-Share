@@ -1,4 +1,4 @@
-USE realestate_share;
+USE realestateshare;
 
 -- Найдём id первого админа (нужно, чтобы заполнить admin_id для старых сообщений)
 SET @admin_id := (
