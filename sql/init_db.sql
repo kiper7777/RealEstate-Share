@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS realestateshare
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE realestate_share;
+USE realestateshare;
 
 -- Таблица партнёров (пользователей)
 CREATE TABLE IF NOT EXISTS users (

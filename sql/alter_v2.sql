@@ -1,4 +1,4 @@
-USE realestate_share;
+USE realestateshare;
 
 -- Статус объекта и доп. поля (опционально)
 ALTER TABLE properties
