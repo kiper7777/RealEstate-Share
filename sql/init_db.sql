@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS realestate_share
+CREATE DATABASE IF NOT EXISTS realestateshare
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
