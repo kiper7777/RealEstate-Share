@@ -11,3 +11,4 @@
 [2026-01-25 15:49:00] Mail error to=7boyss@ukr.net subject=Новое сообщение от партнёра по заявке #15 :: Failed opening required 'C:\xampp\htdocs\PHP\RealEstate-Share\project\lib\PHPMailer\src/../vendor/autoload.php' (include_path='C:\xampp\php\PEAR')
 [2026-04-16 16:07:06] Mail error to=7boyss@ukr.net subject=Новое сообщение от партнёра по заявке #2 :: SMTP Error: Could not connect to SMTP host. Failed to connect to server
 [2026-04-16 16:09:57] Mail error to=john.smith@yahoo.com subject=Новое сообщение по заявке #2 :: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[2026-04-18 13:29:50] Mail error to=7boyss@ukr.net subject=Новое сообщение от партнёра по заявке #5 :: SMTP Error: Could not connect to SMTP host. Failed to connect to server

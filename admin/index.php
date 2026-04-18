@@ -225,18 +225,18 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
         </div>
       </div>
       <div class="nav-actions">
-        <a href="../project/index.php" class="nav-link">На сайт</a>
-        <a href="../project/dashboard.php" class="nav-link">Кабинет</a>
-        <span class="nav-user">Админ: <?= h($_SESSION['user_name']) ?></span>
-        <a href="../project/logout.php" class="btn btn-outline btn-sm">Выйти</a>
+        <a href="../project/index.php" class="nav-link">To website</a>
+        <a href="../project/dashboard.php" class="nav-link">Cabinet</a>
+        <span class="nav-user">Admin: <?= h($_SESSION['user_name']) ?></span>
+        <a href="../project/logout.php" class="btn btn-outline btn-sm">Exit</a>
       </div>
     </div>
   </header>
 
   <main class="admin-wrap">
     <div class="admin-tabs">
-      <button class="admin-tab active" data-tab="objects">Объекты</button>
-      <button class="admin-tab" data-tab="media">Медиа</button>
+      <button class="admin-tab active" data-tab="objects">Objects</button>
+      <button class="admin-tab" data-tab="media">Media</button>
       <button class="admin-tab" data-tab="pending">Pending</button>
     </div>
 
@@ -248,10 +248,10 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
         <div class="admin-box">
           <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
             <div>
-              <div class="admin-title">Список объектов</div>
-              <div class="admin-small">Нажми «Редактировать» — форма справа заполнится исходными данными.</div>
+              <div class="admin-title">List of objects</div>
+              <div class="admin-small">Click "Edit" - the form on the right will be filled with the original data.</div>
             </div>
-            <button class="btn btn-primary btn-sm" type="button" id="newPropertyBtn">+ Новый объект</button>
+            <button class="btn btn-primary btn-sm" type="button" id="newPropertyBtn">+ New object</button>
           </div>
 
           <div class="list" id="propsList">
@@ -270,14 +270,14 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
                     <?= h($p['location']) ?> · <?= eur($p['price']) ?>
                   </div>
                   <div class="chips">
-                    <span class="chip">Тип: <strong><?= h($p['type']) ?></strong></span>
-                    <span class="chip">Регион: <strong><?= h($p['region']) ?></strong></span>
-                    <span class="chip">Статус: <strong><?= h($p['status']) ?></strong></span>
+                    <span class="chip">Type: <strong><?= h($p['type']) ?></strong></span>
+                    <span class="chip">Region: <strong><?= h($p['region']) ?></strong></span>
+                    <span class="chip">Status: <strong><?= h($p['status']) ?></strong></span>
                   </div>
 
                   <div class="item-actions">
-                    <button class="btn btn-outline btn-sm js-edit" type="button">Редактировать</button>
-                    <button class="btn btn-outline btn-sm js-delete" type="button">Удалить</button>
+                    <button class="btn btn-outline btn-sm js-edit" type="button">Edit</button>
+                    <button class="btn btn-outline btn-sm js-delete" type="button">Delete</button>
                   </div>
                 </div>
               </div>
@@ -286,32 +286,32 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
         </div>
 
         <div class="admin-box">
-          <div class="admin-title" id="formTitle">Редактирование объекта</div>
-          <div class="admin-small">Сохранение идёт через <code>admin_property_save.php</code> (insert/update).</div>
+          <div class="admin-title" id="formTitle">Editing an object</div>
+          <div class="admin-small">Saving is done via <code>admin_property_save.php</code> (insert/update).</div>
 
           <form id="propForm">
             <input type="hidden" id="prop_id" value="">
 
-            <div class="form-row"><label>Название</label><input type="text" id="prop_name" required></div>
-            <div class="form-row"><label>Локация</label><input type="text" id="prop_location" required></div>
+            <div class="form-row"><label>Name</label><input type="text" id="prop_name" required></div>
+            <div class="form-row"><label>Location</label><input type="text" id="prop_location" required></div>
 
             <div class="row3">
               <div class="form-row">
-                <label>Тип</label>
+                <label>Type</label>
                 <select id="prop_type">
                   <option value="residential">residential</option>
                   <option value="commercial">commercial</option>
                 </select>
               </div>
               <div class="form-row">
-                <label>Регион</label>
+                <label>Region</label>
                 <select id="prop_region">
                   <option value="europe">europe</option>
                   <option value="middleeast">middleeast</option>
                 </select>
               </div>
               <div class="form-row">
-                <label>Статус</label>
+                <label>Status</label>
                 <select id="prop_status">
                   <option value="funding">funding</option>
                   <option value="acquired">acquired</option>
@@ -322,26 +322,26 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
             </div>
 
             <div class="row">
-              <div class="form-row"><label>Цена (€)</label><input type="number" id="prop_price" step="100" required></div>
-              <div class="form-row"><label>Мин. взнос (€)</label><input type="number" id="prop_min_ticket" step="100" required></div>
+              <div class="form-row"><label>Price (€)</label><input type="number" id="prop_price" step="100" required></div>
+              <div class="form-row"><label>Min. contribution (€)</label><input type="number" id="prop_min_ticket" step="100" required></div>
             </div>
 
             <div class="row">
-              <div class="form-row"><label>Макс. партнёров</label><input type="number" id="prop_max_partners" step="1" required></div>
-              <div class="form-row"><label>Аренда/год (€)</label><input type="number" id="prop_rent_per_year" step="100" required></div>
+              <div class="form-row"><label>Max. partners</label><input type="number" id="prop_max_partners" step="1" required></div>
+              <div class="form-row"><label>Rent/year (€)</label><input type="number" id="prop_rent_per_year" step="100" required></div>
             </div>
 
             <div class="row">
-              <div class="form-row"><label>Доходность (%)</label><input type="number" id="prop_yield" step="0.1" required></div>
-              <div class="form-row"><label>Окупаемость (лет)</label><input type="number" id="prop_payback" step="0.1" required></div>
+              <div class="form-row"><label>Profitability (%)</label><input type="number" id="prop_yield" step="0.1" required></div>
+              <div class="form-row"><label>Payback period (years)</label><input type="number" id="prop_payback" step="0.1" required></div>
             </div>
 
-            <div class="form-row"><label>Риски</label><input type="text" id="prop_risk" required></div>
-            <div class="form-row"><label>Описание</label><textarea id="prop_description" required></textarea></div>
+            <div class="form-row"><label>Risks</label><input type="text" id="prop_risk" required></div>
+            <div class="form-row"><label>Description</label><textarea id="prop_description" required></textarea></div>
 
             <div class="row">
-              <button class="btn btn-primary btn-sm" type="submit">Сохранить</button>
-              <button class="btn btn-outline btn-sm" type="button" id="propReset">Очистить</button>
+              <button class="btn btn-primary btn-sm" type="submit">Save</button>
+              <button class="btn btn-outline btn-sm" type="button" id="propReset">Clear</button>
             </div>
 
             <div style="margin-top:10px;color:var(--text-muted);font-size:12px;" id="propMsg"></div>
@@ -353,22 +353,22 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     <!-- MEDIA -->
     <section class="admin-panel" id="tab-media">
       <div class="admin-box">
-        <div class="admin-title">Медиа по объекту</div>
-        <div class="admin-small">Выберите объект — покажутся только его фото. Чекбоксы → массовое удаление.</div>
+        <div class="admin-title">Media on the property</div>
+        <div class="admin-small">Select an object—only its photos will be displayed. Checkboxes → Bulk Delete.</div>
 
         <div class="media-top">
           <div class="form-row" style="min-width:320px;">
-            <label>Объект</label>
+            <label>Object</label>
             <select id="mediaPropertySelect">
-              <option value="0">— выберите объект —</option>
+              <option value="0">— select an object —</option>
               <?php foreach ($props as $p): ?>
                 <option value="<?= (int)$p['id'] ?>">#<?= (int)$p['id'] ?> · <?= h($p['name']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
 
-          <button class="btn btn-outline btn-sm" id="mediaReload" type="button">Обновить</button>
-          <button class="btn btn-outline btn-sm" id="mediaDeleteSelected" type="button">Удалить выбранные</button>
+          <button class="btn btn-outline btn-sm" id="mediaReload" type="button">Refresh</button>
+          <button class="btn btn-outline btn-sm" id="mediaDeleteSelected" type="button">Delete selected</button>
           <div style="color:var(--text-muted);font-size:12px;" id="mediaMsg"></div>
         </div>
 
@@ -376,7 +376,7 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
 
         <hr style="border:none;border-top:1px solid rgba(55,65,81,.7);margin:14px 0;">
 
-        <div class="admin-title" style="font-size:14px;">Загрузить фото</div>
+        <div class="admin-title" style="font-size:14px;">Upload a photo</div>
         <form id="mediaForm" enctype="multipart/form-data">
           <input type="hidden" name="csrf_token" value="<?= h($csrf) ?>">
 
@@ -392,8 +392,8 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
           </div>
 
           <div class="form-row"><label>caption</label><input type="text" name="caption"></div>
-          <div class="form-row"><label>Файл</label><input type="file" name="image" accept="image/jpeg,image/png,image/webp" required></div>
-          <button class="btn btn-primary btn-sm" type="submit">Загрузить</button>
+          <div class="form-row"><label>File</label><input type="file" name="image" accept="image/jpeg,image/png,image/webp" required></div>
+          <button class="btn btn-primary btn-sm" type="submit">Download</button>
         </form>
       </div>
     </section>
@@ -401,11 +401,11 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     <!-- PENDING -->
     <section class="admin-panel" id="tab-pending">
       <div class="admin-box">
-        <div class="admin-title">Pending заявки</div>
+        <div class="admin-title">Pending applications</div>
         <div class="admin-small">Ничего не меняем по логике. Добавили: бейдж новых сообщений + mark-read.</div>
 
         <?php if (empty($pending)): ?>
-          <div class="admin-small">Нет pending заявок.</div>
+          <div class="admin-small">There are no pending applications.</div>
         <?php else: ?>
           <div class="pending-grid" id="pendingList">
             <?php foreach ($pending as $x): ?>
@@ -431,16 +431,16 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
                     </div>
 
                     <div class="chips">
-                      <span class="chip">Тип: <strong><?= h($x['type']) ?></strong></span>
-                      <span class="chip">Статус: <strong><?= h($x['property_status']) ?></strong></span>
-                      <span class="chip">Регион: <strong><?= h($x['region']) ?></strong></span>
-                      <span class="chip">Сумма заявки: <strong><?= eur($x['amount']) ?></strong></span>
+                      <span class="chip">Type: <strong><?= h($x['type']) ?></strong></span>
+                      <span class="chip">Status: <strong><?= h($x['property_status']) ?></strong></span>
+                      <span class="chip">Region: <strong><?= h($x['region']) ?></strong></span>
+                      <span class="chip">Bid amount: <strong><?= eur($x['amount']) ?></strong></span>
                     </div>
                   </div>
 
                   <div>
-                    <button class="btn btn-primary btn-mini js-approve" type="button">Подтвердить</button>
-                    <button class="btn btn-outline btn-mini js-reject" type="button">Отклонить</button>
+                    <button class="btn btn-primary btn-mini js-approve" type="button">Confirm</button>
+                    <button class="btn btn-outline btn-mini js-reject" type="button">Reject</button>
 
                     <button class="btn btn-outline btn-mini btn-badge js-open-chat" type="button">
                       Чат
@@ -453,25 +453,25 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
 
                 <div class="pending-body">
                   <div class="kv">
-                    <div class="box"><div class="k">Стоимость</div><div class="v"><?= eur($x['price']) ?></div></div>
-                    <div class="box"><div class="k">Инвестировано</div><div class="v"><?= eur($x['invested']) ?></div></div>
-                    <div class="box"><div class="k">Осталось</div><div class="v"><?= eur($remaining) ?></div></div>
-                    <div class="box"><div class="k">Аренда / год</div><div class="v"><?= eur($x['rent_per_year']) ?></div></div>
-                    <div class="box"><div class="k">Доходность</div><div class="v"><?= number_format($x['yield_percent'], 2, ',', ' ') ?>%</div></div>
-                    <div class="box"><div class="k">Окупаемость</div><div class="v"><?= number_format($x['payback_years'], 1, ',', ' ') ?> лет</div></div>
-                    <div class="box"><div class="k">Партнёры</div><div class="v"><?= (int)$x['participants'] ?></div></div>
-                    <div class="box"><div class="k">Слоты доступны</div><div class="v"><?= (int)$slotsLeft ?></div></div>
+                    <div class="box"><div class="k">Price</div><div class="v"><?= eur($x['price']) ?></div></div>
+                    <div class="box"><div class="k">Invested</div><div class="v"><?= eur($x['invested']) ?></div></div>
+                    <div class="box"><div class="k">Left</div><div class="v"><?= eur($remaining) ?></div></div>
+                    <div class="box"><div class="k">Rent / year</div><div class="v"><?= eur($x['rent_per_year']) ?></div></div>
+                    <div class="box"><div class="k">Profitability</div><div class="v"><?= number_format($x['yield_percent'], 2, ',', ' ') ?>%</div></div>
+                    <div class="box"><div class="k">Payback</div><div class="v"><?= number_format($x['payback_years'], 1, ',', ' ') ?> лет</div></div>
+                    <div class="box"><div class="k">Partners</div><div class="v"><?= (int)$x['participants'] ?></div></div>
+                    <div class="box"><div class="k">Available slots</div><div class="v"><?= (int)$slotsLeft ?></div></div>
                     <div class="box" style="grid-column:1/-1;">
-                      <div class="k">Риски</div>
+                      <div class="k">Risks</div>
                       <div class="v" style="font-size:12px;font-weight:500;color:rgba(226,232,240,.92);"><?= h($x['risk']) ?></div>
                     </div>
                   </div>
 
                   <div>
-                    <div class="admin-small">Фото объекта</div>
+                    <div class="admin-small">Object photo</div>
                     <div class="photos">
                       <?php if (empty($photos)): ?>
-                        <div class="admin-small">Нет фото</div>
+                        <div class="admin-small">No photo</div>
                       <?php else: ?>
                         <?php foreach ($photos as $u): ?>
                           <img src="<?= h($u) ?>" alt="">
@@ -479,7 +479,7 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
                       <?php endif; ?>
                     </div>
 
-                    <div class="admin-small" style="margin-top:10px;">Описание</div>
+                    <div class="admin-small" style="margin-top:10px;">Description</div>
                     <div style="color:rgba(226,232,240,.9);font-size:12px;line-height:1.45;">
                       <?= nl2br(h($x['description'])) ?>
                     </div>
@@ -502,7 +502,7 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
 <div class="drawer" id="drawer">
   <div class="drawer-head">
     <div>
-      <div class="drawer-title" id="chatTitle">Чат</div>
+      <div class="drawer-title" id="chatTitle">Chat</div>
       <div class="admin-small" id="chatSub" style="margin:6px 0 0;"></div>
     </div>
     <button class="close-x" id="chatClose" type="button">×</button>
@@ -511,10 +511,11 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
   <div class="chat-list" id="chatList"></div>
 
   <div class="chat-form">
-    <textarea id="chatInput" placeholder="Написать сообщение заявителю..."></textarea>
-    <button class="btn btn-primary btn-sm" id="chatSend" type="button">Отправить</button>
+    <textarea id="chatInput" placeholder="Write a message to the applicant..."></textarea>
+    <button class="btn btn-primary btn-sm" id="chatSend" type="button">Send</button>
   </div>
 </div>
+
 
 <script>
   const CSRF = <?= json_encode($csrf, JSON_UNESCAPED_UNICODE) ?>;
@@ -570,15 +571,15 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     prop_payback.value = d.payback_years || '';
     prop_risk.value = d.risk || '';
     prop_description.value = d.description || '';
-    propMsg.textContent = d.id ? ('Редактирование объекта #' + d.id) : 'Создание нового объекта';
-    formTitle.textContent = d.id ? 'Редактирование объекта' : 'Создание нового объекта';
+    propMsg.textContent = d.id ? ('Editing an object #' + d.id) : 'Creating a new object';
+    formTitle.textContent = d.id ? 'Editing an object' : 'Creating a new object';
   }
 
   function newProperty(){
     clearSelected();
     document.getElementById('propForm').reset();
     fillForm({});
-    toast('Новый объект: заполните форму и нажмите Сохранить');
+    toast('New object: fill out the form and click Save');
   }
 
   document.getElementById('newPropertyBtn').addEventListener('click', newProperty);
@@ -587,17 +588,17 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     const data = JSON.parse(item.dataset.prop || "{}");
     item.querySelector('.js-edit').addEventListener('click', () => {
       clearSelected(); item.classList.add('selected'); fillForm(data);
-      toast('Вы редактируете объект #' + data.id);
+      toast('You are editing an object #' + data.id);
     });
     item.querySelector('.js-delete').addEventListener('click', async () => {
-      if (!confirm('Удалить объект #' + data.id + '?')) return;
+      if (!confirm('Delete object #' + data.id + '?')) return;
       const r = await fetch('admin_property_delete.php', {
         method:'POST', headers:{'Content-Type':'application/json','X-CSRF-Token':CSRF},
         body: JSON.stringify({ id: data.id })
       });
       const j = await r.json();
-      if (j.success){ item.remove(); toast('Объект удалён'); newProperty(); }
-      else toast(j.message || 'Ошибка удаления', false);
+      if (j.success){ item.remove(); toast('The object has been removed.'); newProperty(); }
+      else toast(j.message || 'Error deleting', false);
     });
   });
 
@@ -627,16 +628,16 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     });
     const j = await r.json();
     if (j.success){
-      toast(payload.id ? 'Сохранено' : ('Создан объект #' + j.id));
+      toast(payload.id ? 'Saved' : ('Object created #' + j.id));
       propMsg.textContent = 'OK';
       if (!payload.id && j.id) {
-        // после создания — перезайди в админку, чтобы увидеть новый объект в списке (самый простой и надёжный вариант)
-        toast('Объект создан. Обнови страницу (F5), чтобы увидеть его в списке.');
+        
+        toast('The object has been created. Refresh the page (F5) to see it in the list..');
         prop_id.value = j.id;
       }
     } else {
-      toast(j.message || 'Ошибка сохранения', false);
-      propMsg.textContent = j.message || 'Ошибка';
+      toast(j.message || 'Saving error', false);
+      propMsg.textContent = j.message || 'Error';
     }
   });
 
@@ -659,13 +660,13 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     const j = await r.json();
     if (!j.success){ mediaMsg.textContent = j.message || 'Ошибка'; return; }
     const list = Array.isArray(j.media) ? j.media : [];
-    if (!list.length){ mediaGrid.innerHTML = '<div class="admin-small">Нет фото для этого объекта.</div>'; return; }
+    if (!list.length){ mediaGrid.innerHTML = '<div class="admin-small">There are no photos for this object.</div>'; return; }
 
     mediaGrid.innerHTML = list.map(m => `
       <div class="media-card">
         <label class="chip" style="cursor:pointer;">
           <input class="js-media-check" type="checkbox" value="${m.id}">
-          <span>Выбрать</span>
+          <span>Choose</span>
         </label>
         <img src="${m.url}" alt="">
         <div class="media-meta">
@@ -683,8 +684,8 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
 
   document.getElementById('mediaDeleteSelected').addEventListener('click', async () => {
     const checks = Array.from(document.querySelectorAll('.js-media-check:checked'));
-    if (!checks.length) return toast('Ничего не выбрано', false);
-    if (!confirm('Удалить выбранные фото ('+checks.length+')?')) return;
+    if (!checks.length) return toast('Nothing selected', false);
+    if (!confirm('Delete selected photos ('+checks.length+')?')) return;
 
     const ids = checks.map(c => Number(c.value));
     const r = await fetch('admin_media_delete_bulk.php', {
@@ -692,18 +693,18 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
       body: JSON.stringify({ ids })
     });
     const j = await r.json();
-    if (j.success){ toast('Удалено: ' + (j.deleted || ids.length)); loadMedia(); }
-    else toast(j.message || 'Ошибка удаления', false);
+    if (j.success){ toast('Deleted: ' + (j.deleted || ids.length)); loadMedia(); }
+    else toast(j.message || 'Error deleting', false);
   });
 
   document.getElementById('mediaForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    mediaMsg.textContent = 'Загрузка...';
+    mediaMsg.textContent = 'Loading...';
     const fd = new FormData(e.target);
     const r = await fetch('admin_media_upload.php', { method:'POST', body: fd });
     const j = await r.json();
-    if (j.success){ toast('Фото загружено (id=' + j.media_id + ')'); mediaMsg.textContent='OK'; loadMedia(); }
-    else { toast(j.message || 'Ошибка загрузки', false); mediaMsg.textContent = j.message || 'Ошибка'; }
+    if (j.success){ toast('Photo uploaded (id=' + j.media_id + ')'); mediaMsg.textContent='OK'; loadMedia(); }
+    else { toast(j.message || 'Loading error', false); mediaMsg.textContent = j.message || 'Error'; }
   });
 
   // ---- Pending status + chat drawer
@@ -716,8 +717,8 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     if (j.success){
       const el = document.querySelector('.js-pending-item[data-id="'+partId+'"]');
       if (el) el.remove();
-      toast(status === 'approved' ? 'Заявка подтверждена #' + partId : 'Заявка отклонена #' + partId);
-    } else toast(j.message || 'Ошибка', false);
+      toast(status === 'approved' ? 'Application confirmed #' + partId : 'Application rejected #' + partId);
+    } else toast(j.message || 'Error', false);
   }
 
   const overlay = document.getElementById('overlay');
@@ -746,13 +747,13 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
   }
 
   async function loadChat(){
-    chatList.innerHTML = '<div class="admin-small">Загрузка...</div>';
+    chatList.innerHTML = '<div class="admin-small">Loading...</div>';
     const url = 'admin_chat_fetch.php?user_id=' + chatCtx.userId + '&participation_id=' + chatCtx.participationId;
     const r = await fetch(url);
     const j = await r.json();
-    if (!j.success){ chatList.innerHTML = '<div class="admin-small">'+escapeHtml(j.message || 'Ошибка')+'</div>'; return; }
+    if (!j.success){ chatList.innerHTML = '<div class="admin-small">'+escapeHtml(j.message || 'Error')+'</div>'; return; }
     const msgs = Array.isArray(j.messages) ? j.messages : [];
-    if (!msgs.length){ chatList.innerHTML = '<div class="admin-small">Сообщений нет.</div>'; await markRead(); return; }
+    if (!msgs.length){ chatList.innerHTML = '<div class="admin-small">No messages.</div>'; await markRead(); return; }
 
     chatList.innerHTML = msgs.map(m => `
       <div class="msg ${m.sender_role === 'admin' ? 'admin' : 'user'}">
@@ -784,8 +785,8 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
     if (j.success){
       chatInput.value = '';
       await loadChat();
-      toast('Отправлено');
-    } else toast(j.message || 'Ошибка отправки', false);
+      toast('Sent');
+    } else toast(j.message || 'Sending error', false);
   }
 
   document.getElementById('chatSend').addEventListener('click', sendChat);
@@ -801,7 +802,7 @@ while ($resP && ($r = mysqli_fetch_assoc($resP))) {
         propertyId: Number(card.dataset.propertyId),
         openerBtn: e.currentTarget
       };
-      chatTitle.textContent = 'Чат по заявке #' + chatCtx.participationId;
+      chatTitle.textContent = 'Chat for request #' + chatCtx.participationId;
       chatSub.textContent = card.dataset.userName + ' · ' + card.dataset.userEmail + ' · ' + card.dataset.propertyName;
       openDrawer();
       await loadChat();
